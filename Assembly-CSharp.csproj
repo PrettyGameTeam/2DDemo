@@ -55,6 +55,7 @@
      <Compile Include="Assets\Scripts\Reflect.cs" />
      <Compile Include="Assets\Scripts\SceneControl.cs" />
      <Compile Include="Assets\Scripts\Shining.cs" />
+     <Compile Include="Assets\Scripts\Target.cs" />
      <None Include="Assets\Shaders\MaskShader.shader" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>D:/WorkSpace/UnityWorkSpace/2DDemo/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>

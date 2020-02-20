@@ -5,7 +5,7 @@ using UnityEngine;
 //激活组件
 public class ActiveObject : MonoBehaviour
 {
-    //激活方式 1 点击激活 2 光照激活
+    //激活方式 1 点击激活 2 光照激活 3不再光照激活
     public int ActiveType = 0;
 
     //帧动画每帧的间隔
@@ -51,6 +51,7 @@ public class ActiveObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log("ActiveType=" + ActiveType + ",lastShiningTime=" + lastShiningTime);
         if (IsPlaying)
         {
             bool changeAniSpr = false;
@@ -104,26 +105,54 @@ public class ActiveObject : MonoBehaviour
             }
 
             framePlayTime += Time.deltaTime;
+            if (ActiveType == 2)
+            {
+                lastShiningTime -= Time.deltaTime;
+                if (lastShiningTime < 0)
+                {
+                    lastShiningTime = 0;
+                    //正向播放改反向
+                    if (!IsOpposePlay)
+                    {
+                        //持续照射时间归零,开始反向播放动画
+                        IsOpposePlay = true;
+                        //重置framePlayTime
+                        framePlayTime = 0;
+                    }
+                }
+            }
+        }
+        
+        if (ActiveType == 3)
+        {
             lastShiningTime -= Time.deltaTime;
             if (lastShiningTime < 0)
             {
-                lastShiningTime = 0;
-                //正向播放改反向
-                if (!IsOpposePlay)
+                lastShiningTime = 0f;
+                //设置播放状态为播放中
+                if (!IsPlaying)
                 {
-                    //持续照射时间归零,开始反向播放动画
-                    IsOpposePlay = true;
+                    IsPlaying = true;
+                    //向激活方向播放
+                    IsOpposePlay = false;
+                    sr.material.color = new Color(1,1,1,0);
+                    //设置动画节点显示
+                    AnimationObj.SetActive(true);
                     //重置framePlayTime
                     framePlayTime = 0;
                 }
             }
         }
+        
     }
 
     private void ResetInfo()
     {
         IsPlaying = false;
-        lastShiningTime = 0;
+        if (ActiveType == 2)
+        {
+            lastShiningTime = 0;
+        }
         framePlayTime = 0;
         IsOpposePlay = false;
         frameIndex = 0;
@@ -134,18 +163,34 @@ public class ActiveObject : MonoBehaviour
     public void LightShining(LineRenderer line)
     {
         lastShiningTime += Time.deltaTime * 1.01f;
-        if (!IsPlaying)
+        if (ActiveType == 2)
         {
-            lastShiningTime += Time.deltaTime * 1.01f;
-            IsPlaying = true;
-            //设置本节点透明度为0
-            sr.material.color = new Color(1,1,1,0);
+            if (!IsPlaying)
+            {
+                lastShiningTime += Time.deltaTime * 1.01f;
+                IsPlaying = true;
+                //设置本节点透明度为0
+                sr.material.color = new Color(1,1,1,0);
+                //设置动画节点显示
+                AnimationObj.SetActive(true);
             
-            //设置动画节点显示
-            AnimationObj.SetActive(true);
-            
-            //设置动画为正向播放
-            IsOpposePlay = false;
+                //设置动画为正向播放
+                IsOpposePlay = false;
+            }
+        } 
+        else if (ActiveType == 3)
+        {
+            //如果正在倒退动画,改为反向播放
+            if (IsPlaying)
+            {
+                //正在激活下一个状态,停止,恢复到现在状态
+                if (!IsOpposePlay)
+                {
+                    lastShiningTime += Time.deltaTime * 1.01f;
+                    IsOpposePlay = true;
+                    framePlayTime = 0;
+                }
+            }
         }
     }
 }

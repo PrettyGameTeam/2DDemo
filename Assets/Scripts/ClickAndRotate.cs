@@ -1,12 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ClickAndRotate : MonoBehaviour
 {
     
     //光源组件点击半径
     public int Radius;
+    //子物件
+    public GameObject RotateObj;
+    //相对初始位置的可转动角度
+    public int Angle = 90;
     
     //点击起始位置
     private Vector2 originPos;
@@ -22,13 +27,15 @@ public class ClickAndRotate : MonoBehaviour
 
     //前一个拖动点
     private Vector2 prePos;
+    
+    //组件开始的旋转角度
+    private float initedAngle;
 
-    //子物件
-    public GameObject rotateObj;
     // Start is called before the first frame update
     void Start()
     {
-        
+        initedAngle = transform.eulerAngles.z;
+        Debug.Log("ClickAndRotate initedAngle=" + initedAngle);
     }
 
     // Update is called once per frame
@@ -77,9 +84,9 @@ public class ClickAndRotate : MonoBehaviour
             var mousePositionOnScreen = Input.mousePosition;
             var mousePositionInWorld = Camera.main.ScreenToWorldPoint(mousePositionOnScreen);
             Transform t;
-            if (rotateObj != null)
+            if (RotateObj != null)
             {
-                t = rotateObj.transform;
+                t = RotateObj.transform;
             }
             else
             {
@@ -90,6 +97,7 @@ public class ClickAndRotate : MonoBehaviour
             prePos = mousePositionInWorld;
             Vector2 to = prePos - (Vector2)t.position;
             t.rotation *= Quaternion.FromToRotation(from,to);
+            Debug.Log("t.eulerAngles=" + t.eulerAngles);
         }
     }
     
