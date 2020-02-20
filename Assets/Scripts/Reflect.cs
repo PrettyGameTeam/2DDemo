@@ -1,8 +1,8 @@
-﻿﻿using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Block : MonoBehaviour
+public class Reflect : MonoBehaviour
 {
     //发光点组件
     public GameObject ShiningPoint;
@@ -44,5 +44,12 @@ public class Block : MonoBehaviour
             lastShiningTime += Time.deltaTime;
             ShiningPoint.transform.position = hitPoint;
         }
+    }
+
+    //返回出射向量
+    public Vector2 GetOutDirection(Vector2 inDirection,Vector2 normal)
+    {
+        return Vector2.Reflect(inDirection, normal);
+        
     }
 }

@@ -93,7 +93,6 @@ public class BaseObject : MonoBehaviour
                         }
                     }   
                 }
-                
             }
 
             //响应鼠标拖动事件

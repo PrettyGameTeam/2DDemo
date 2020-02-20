@@ -17,8 +17,8 @@ public class SceneControl : MonoBehaviour
             var gameObject = GameObject.Find(currentCheckedObjectName);
             if (gameObject != null)
             {
-                BaseObject bo = gameObject.GetComponent<BaseObject>();
-                bo.SetChecked(false);
+                ClickAndRotate car = gameObject.GetComponent<ClickAndRotate>();
+                car.SetChecked(false);
             }
             
         }

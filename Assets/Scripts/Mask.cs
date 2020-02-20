@@ -64,28 +64,21 @@ public class Mask : MonoBehaviour
         var asH = Screen.height / 1920f;
         foreach (var obj in LightingObjects)
         {
-            BaseObject bo = obj.gameObject.GetComponent<BaseObject>();
-            if (bo.LightShape == 1 && bo.P1 > 0)
+            Shining sh = obj.gameObject.GetComponent<Shining>();
+            if (sh.LightShape == 1 && sh.P1 > 0)
             {
-                
-                pointLights.Add(bo.GetPointLightInfo());
+                pointLights.Add(sh.GetPointLightInfo());
                 pointCount++;
             } 
-            else if (bo.LightShape == 2 && bo.P1 > 0)
+            else if (sh.LightShape == 2 && sh.P1 > 0)
             {
                 
-                foreach (var e in bo.GetLineLightList())
+                foreach (var e in sh.GetLineLightList())
                 {
                     lineLights.Add(e);
                     lineCount++;
-                }
-                
+                }   
             }
-
-            // if (obj.name == "Sprite")
-            // {
-            //     Debug.Log("obj.tr=" + obj.transform.rotation);
-            // }
         }
         for (int i = pointCount; i < 20; i++)
         {

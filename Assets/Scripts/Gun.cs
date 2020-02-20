@@ -1,6 +1,7 @@
 ﻿﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+ using UnityEditor;
+ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
@@ -22,7 +23,6 @@ public class Gun : MonoBehaviour
     {
         linePoints.Clear();
         //光线起始点
-        // var startPoint = transform.position + new Vector3(0,1,0);
         var startPoint = transform.position;
 
         //光线射出方向
@@ -39,34 +39,25 @@ public class Gun : MonoBehaviour
             {
                 linePoints.Add(hit.point);
                 var obj = hit.collider.gameObject;
-                BaseObject bo = obj.GetComponent<BaseObject>();
-                if (bo != null)
-                {
-                    //阻挡光线物体
-                    if (bo.IsBlock)
-                    {
-                        needReflect = false;
-                    }
-                    //可反射物
-                    else if (bo.IsReflect)
-                    {
-                        needReflect = true;
-                        //利用Vector2的反射函数来计算反射方向
-                        var inDirection = hit.point - (Vector2) startPoint;
-                        direction = Vector2.Reflect(inDirection, hit.normal);
-                        // Debug.Log("i=" + i + ",hit=" + hit.point + " startPoint=" + startPoint + ",inDirection=" + inDirection + ",outDirection=" + direction);
-                        //击中点作为新的起点
-                        startPoint = (Vector3)hit.point + direction * 0.01f;
-                    }
-                    //既不反射也不阻挡物体(光源)
-                    else
-                    {
-                        needReflect = false;
-                    }
-                }
-                else
+                Block bl = obj.GetComponent<Block>();
+                //阻挡光线
+                if (bl != null)
                 {
                     needReflect = false;
+                    bl.LightShining(hit.point);
+                }
+                
+                Reflect re = obj.GetComponent<Reflect>();
+                if (re != null)
+                {
+                    needReflect = true;
+                    //利用Vector2的反射函数来计算反射方向
+                    
+                    var inDirection = hit.point - (Vector2) startPoint;
+                    direction = re.GetOutDirection(inDirection, hit.normal);
+                    re.LightShining(hit.point);
+                    //击中点作为新的起点
+                    startPoint = (Vector3)hit.point + direction * 0.01f;
                 }
                 
                 ActiveObject ao = obj.GetComponent<ActiveObject>();
