@@ -8,6 +8,8 @@ public class SceneControl : MonoBehaviour
     //当前被选中的组件名称
     private string currentCheckedObjectName = null;
     private GameObject choose;
+    private GameObject stage;
+    private string stageName = null;
 
     //改变选中的组件
     public void ChangeCheckedObj(GameObject obj)
@@ -36,6 +38,7 @@ public class SceneControl : MonoBehaviour
     {
         choose = GameObject.Find("Choose");
         choose.SetActive(false);
+        loadStage();
     }
 
     // Update is called once per frame
@@ -43,4 +46,28 @@ public class SceneControl : MonoBehaviour
     {
         
     }
+
+    //加载关卡prefab
+    public void loadStage()
+    {
+        if (stageName == null)
+        {
+            stageName = "Stage";   
+        }
+
+        if (stage != null)
+        {
+            Destroy(stage.gameObject);
+        }
+
+        //加载prefab
+        stage = (GameObject)Instantiate(Resources.Load("Prefabs/Stage"));
+    }
+
+    //恭喜胜利
+    public void Victory()
+    {
+        
+    }
+
 }

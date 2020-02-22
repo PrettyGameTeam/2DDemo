@@ -51,7 +51,7 @@ public class ActiveObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("ActiveType=" + ActiveType + ",lastShiningTime=" + lastShiningTime);
+        // Debug.Log("ActiveType=" + ActiveType + ",lastShiningTime=" + lastShiningTime);
         if (IsPlaying)
         {
             bool changeAniSpr = false;

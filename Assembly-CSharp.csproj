@@ -52,6 +52,7 @@
      <Compile Include="Assets\Scripts\ClickAndRotate.cs" />
      <Compile Include="Assets\Scripts\Gun.cs" />
      <Compile Include="Assets\Scripts\Mask.cs" />
+     <Compile Include="Assets\Scripts\MenuClick.cs" />
      <Compile Include="Assets\Scripts\Reflect.cs" />
      <Compile Include="Assets\Scripts\SceneControl.cs" />
      <Compile Include="Assets\Scripts\Shining.cs" />

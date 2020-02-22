@@ -61,6 +61,7 @@ public class ClickAndRotate : MonoBehaviour
         //响应鼠标抬起事件
         if (Input.GetMouseButtonUp(0))
         {
+            Debug.Log("Lighting GetMouseButtonUp originPos=" + originPos);
             isDraging = false;
             var mousePositionOnScreen = Input.mousePosition;
             var mousePositionInWorld = Camera.main.ScreenToWorldPoint(mousePositionOnScreen);

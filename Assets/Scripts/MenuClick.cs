@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Target : MonoBehaviour
+public class MenuClick : MonoBehaviour
 {
+    public int ClickEvent = 1;
     private Vector3 originPos;
+    private bool isPanelShow;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,32 +21,40 @@ public class Target : MonoBehaviour
         
     }
 
-    //当鼠标点击下去
     private void OnMouseDown()
     {
         var mousePositionOnScreen = Input.mousePosition;
         var mousePositionInWorld =  Camera.main.ScreenToWorldPoint(mousePositionOnScreen);
         originPos = mousePositionInWorld;
-        Debug.Log("target OnMouseDown originPos=" + originPos); 
+        Debug.Log("Lighting OnMouseDown originPos=" + originPos); 
     }
-    
-    
 
-    //当鼠标抬起
     private void OnMouseUp()
     {
-        Debug.Log("target OnMouseUp originPos=" + originPos); 
         var mousePositionOnScreen = Input.mousePosition;
         var mousePositionInWorld = Camera.main.ScreenToWorldPoint(mousePositionOnScreen);
         if (originPos.x == mousePositionInWorld.x && originPos.y == mousePositionInWorld.y)
         {
-            Debug.Log("xxxxxxxx");
-            SpriteRenderer sr = GetComponent<SpriteRenderer>();
-            if (sr != null && sr.sprite != null && sr.material != null && sr.material.color.a >= 1f)
+
+            switch (ClickEvent)
             {
-                Debug.Log("wwwwwwwwww");
-                //TODO 弹出胜利框(发送胜利事件)
+                case 1://显示or隐藏菜单
+                    break;
+                case 2://回到关卡选择
+                    break;
+                case 3://进入下一关
+                    break;
+                case 4://重玩此关
+                    break;
+                default:
+                    break;
             }
+            SpriteRenderer sr = GetComponent<SpriteRenderer>();
+            Debug.Log("Lighting OnMouseUp currentPos=" + mousePositionInWorld + ",Victory!!");
+            //TODO 弹出胜利框(发送胜利事件)
         }   
     }
+    
+    
+    
 }
