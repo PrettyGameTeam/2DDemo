@@ -52,11 +52,12 @@
      <Compile Include="Assets\Scripts\ClickAndRotate.cs" />
      <Compile Include="Assets\Scripts\Gun.cs" />
      <Compile Include="Assets\Scripts\Mask.cs" />
-     <Compile Include="Assets\Scripts\MenuClick.cs" />
      <Compile Include="Assets\Scripts\Reflect.cs" />
      <Compile Include="Assets\Scripts\SceneControl.cs" />
      <Compile Include="Assets\Scripts\Shining.cs" />
      <Compile Include="Assets\Scripts\Target.cs" />
+     <Compile Include="Assets\Scripts\UI\Menu.cs" />
+     <Compile Include="Assets\Scripts\UI\StageLoad.cs" />
      <None Include="Assets\Shaders\MaskShader.shader" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>D:/WorkSpace/UnityWorkSpace/2DDemo/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
@@ -79,17 +80,14 @@
  <Reference Include="Unity.Rider.Editor">
  <HintPath>D:/WorkSpace/UnityWorkSpace/2DDemo/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
  </Reference>
- <Reference Include="Unity.2D.Sprite.Editor">
- <HintPath>D:/WorkSpace/UnityWorkSpace/2DDemo/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.2D.Tilemap.Editor">
- <HintPath>D:/WorkSpace/UnityWorkSpace/2DDemo/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
- </Reference>
  <Reference Include="Unity.TextMeshPro">
  <HintPath>D:/WorkSpace/UnityWorkSpace/2DDemo/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.UI">
  <HintPath>D:/WorkSpace/UnityWorkSpace/2DDemo/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.2D.Sprite.Editor">
+ <HintPath>D:/WorkSpace/UnityWorkSpace/2DDemo/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine">
  <HintPath>D:/WorkSoft/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
