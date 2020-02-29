@@ -1062,8 +1062,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Radius: 200
+  OpType: 1
   RotateObj: {fileID: 21751624580466777}
   Angle: 0
+  Slider: {fileID: 0}
 --- !u!1 &21751625521411875
 GameObject:
   m_ObjectHideFlags: 0

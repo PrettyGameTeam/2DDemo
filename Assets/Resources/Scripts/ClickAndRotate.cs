@@ -9,11 +9,16 @@ public class ClickAndRotate : MonoBehaviour
     
     //光源组件点击半径
     public int Radius;
+    
+    //操作方式 1 旋转 2 滑动
+    public int OpType = 1;
     //子物件
     public GameObject RotateObj;
     //相对初始位置的可转动角度
     public int Angle = 90;
-    
+    //滑动组件
+    public GameObject Slider;
+
     //点击起始位置
     private Vector2 originPos;
     
@@ -38,13 +43,41 @@ public class ClickAndRotate : MonoBehaviour
 
     private Vector2 centerPosition;
 
+    private Vector3 start;
+    
+    private Vector3 end;
+
     // Start is called before the first frame update
     void Start()
     {
-        minAngle = -Angle / 2f;
-        maxAngle = Angle / 2f;
-        centerPosition = transform.position;
-        Debug.Log("minAngle=" + minAngle + ",maxAngle=" + maxAngle);
+        if (OpType == 1)
+        {
+            minAngle = -Angle / 2f;
+            maxAngle = Angle / 2f;
+            centerPosition = transform.position;
+            Debug.Log("minAngle=" + minAngle + ",maxAngle=" + maxAngle);
+        } 
+        //取得物件在向量投影上的初始位置向量
+        else if (OpType == 2)
+        {
+            Transform[] childs = Slider.gameObject.GetComponentsInChildren<Transform>();
+            foreach (var ch in childs)
+            {
+                if (ch.name == "Start")
+                {
+                    start = ch.position;
+                }
+
+                if (ch.name == "End")
+                {
+                    end = ch.position;
+                }
+            }
+            
+            //计算初始位置在滑杆上的投影向量
+            centerPosition = (Vector2)start + ShadowVector(transform.position - start, end - start);
+            Debug.Log("Start centerPosition=" + centerPosition + ",start=" + start + ",end=" + end );
+        }
     }
 
     // Update is called once per frame
@@ -102,28 +135,54 @@ public class ClickAndRotate : MonoBehaviour
             {
                 t = transform;
             }
-            Vector2 from = prePos - centerPosition;
-            prePos = mousePositionInWorld;
-            Vector2 to = prePos - centerPosition;
             
-            Debug.Log("from=" + from + ",to=" + to);
-            var angle = SignedAngleBetween(from,to,new Vector3(0,0,1));
-            Debug.Log("angle=" + angle + ",t.rotation=" + t.rotation);
-            if (minAngle != 0f && maxAngle != 0f)
+
+            //转动
+            if (OpType == 1) 
             {
-                if (currentAngle + angle > maxAngle || currentAngle + angle < minAngle)
+                Vector2 from = prePos - centerPosition;
+                prePos = mousePositionInWorld;
+                Vector2 to = prePos - centerPosition;
+                // Debug.Log("from=" + from + ",to=" + to);
+                var angle = SignedAngleBetween(from,to,new Vector3(0,0,1));
+                // Debug.Log("angle=" + angle + ",t.rotation=" + t.rotation);
+                if (minAngle != 0f && maxAngle != 0f)
                 {
-                    angle = 0;
+                    if (currentAngle + angle > maxAngle || currentAngle + angle < minAngle)
+                    {
+                        angle = 0;
+                    }
+                    else
+                    {
+                        currentAngle += angle;
+                    }
                 }
-                else
+                t.eulerAngles = new Vector3(t.eulerAngles.x,t.eulerAngles.y,t.eulerAngles.z + angle);
+            } 
+            //滑动
+            else if (OpType == 2)
+            {
+                Vector2 a = (Vector2)mousePositionInWorld - prePos;
+                prePos = mousePositionInWorld;
+                Vector2 b = end - start;
+                Vector2 c = ShadowVector(a,b);
+                Vector2 tmp = centerPosition + c;
+                //
+                if ((tmp - (Vector2) start).magnitude > (end - start).magnitude)
                 {
-                    currentAngle += angle;
+                    c = (Vector2)end - centerPosition;
                 }
+                else if ((tmp - (Vector2) end).magnitude > (start - end).magnitude)
+                {
+                    c = (Vector2)start - centerPosition;
+                }
+                Debug.Log("Update centerPosition=" + centerPosition + ",start=" + start + ",end=" + end + ",c=" + c );
+                t.position += (Vector3)c;
+                centerPosition += c;
             }
 
 
-            t.eulerAngles = new Vector3(t.eulerAngles.x,t.eulerAngles.y,t.eulerAngles.z + angle);
-            Debug.Log("t.eulerAngles=" + t.eulerAngles);
+            // Debug.Log("t.eulerAngles=" + t.eulerAngles);
             
             // var rad = Mathf.Asin(Vector3.Distance(Vector3.zero, Vector3.Cross(from.normalized, to.normalized)));
             // var angle = rad * Mathf.Rad2Deg;
@@ -172,6 +231,7 @@ public class ClickAndRotate : MonoBehaviour
         }
     }
     
+    //计算旋转角
     public float SignedAngleBetween(Vector3 a, Vector3 b, Vector3 n)
     {
         float angle = Vector3.Angle(a,b);
@@ -179,5 +239,11 @@ public class ClickAndRotate : MonoBehaviour
         return angle * sign;
         // float signed_angle = angle * sign;
         // return (signed_angle <= 0) ? 360 + signed_angle : signed_angle;
+    }
+
+    //取得向量A在向量B上的投影
+    public Vector2 ShadowVector(Vector2 a,Vector2 b)
+    {
+        return Vector3.Project(a,b);
     }
 }

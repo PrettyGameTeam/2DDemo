@@ -6,24 +6,19 @@ using UnityEngine;
 public class SceneControl : MonoBehaviour
 {
     //当前被选中的组件名称
-    private string currentCheckedObjectName = null;
+    private GameObject currentCheckObj = null;
     private GameObject choose;
     private GameObject stage;
 
     //改变选中的组件
     public void ChangeCheckedObj(GameObject obj)
     {
-        if (currentCheckedObjectName != null)
+        if (currentCheckObj != null)
         {
-            var gameObject = GameObject.Find(currentCheckedObjectName);
-            if (gameObject != null)
-            {
-                ClickAndRotate car = gameObject.GetComponent<ClickAndRotate>();
-                car.SetChecked(false);
-            }
-            
+            ClickAndRotate car = currentCheckObj.gameObject.GetComponent<ClickAndRotate>();
+            car.SetChecked(false);
         }
-        currentCheckedObjectName = obj.name;
+        currentCheckObj = obj;
         choose.SetActive(true);
         Debug.Log("Choose set true");
         choose.transform.parent = obj.transform;
