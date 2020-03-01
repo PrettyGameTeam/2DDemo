@@ -1578,10 +1578,20 @@ PrefabInstance:
       propertyPath: m_SpriteTilingProperty.oldSize.x
       value: 1.74
       objectReference: {fileID: 0}
+    - target: {fileID: 1474270714119014533, guid: e2ca465d8751bd54ab20e0bed78215e7,
+        type: 3}
+      propertyPath: m_UsedByComposite
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1474270714119014536, guid: e2ca465d8751bd54ab20e0bed78215e7,
         type: 3}
       propertyPath: m_Name
       value: Block 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1474270714119014536, guid: e2ca465d8751bd54ab20e0bed78215e7,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1474270714119014539, guid: e2ca465d8751bd54ab20e0bed78215e7,
         type: 3}
