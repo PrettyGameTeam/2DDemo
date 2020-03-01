@@ -24,6 +24,7 @@ public class Gun : MonoBehaviour
     {
         lineRenderer = Instantiate(lineObject).GetComponent<LineRenderer>();
         transform.eulerAngles = new Vector3(transform.eulerAngles.x,transform.eulerAngles.y,transform.eulerAngles.z + initAngle);
+        lineRenderer.transform.parent = gameObject.transform;
     }
 
     void CastLight()

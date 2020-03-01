@@ -22,15 +22,10 @@ public class Mask : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Start1");
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        Debug.Log("Start2");
-        spriteRenderer.material.SetFloat("_LineLightingArrLen",0);
-        List<Vector4> lineLights = new List<Vector4>(60);
-        spriteRenderer.material.SetVectorArray("_LineLightingArr",lineLights);
-        
+        ReloadMaterial();
+
         // spriteRenderer.material.SetColor("_Color",new Color(0f,0f,0f,0.5f));
-        
+
         // var spTex = new Texture2D(MaskTex.width,MaskTex.height,TextureFormat.RGBA32,false);
         // RenderTexture currentRT = RenderTexture.active;
         // RenderTexture renderTexture = RenderTexture.GetTemporary(MaskTex.width, MaskTex.height, 32);
@@ -49,6 +44,26 @@ public class Mask : MonoBehaviour
         // spriteRenderer.sprite = sp;
     }
 
+    public void ReloadMaterial()
+    {
+        Debug.Log("Start1");
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        // var t = new Texture2D(1080,1920);
+        // Color a = new Color(0f,0f,0f,1f);
+        // for (int i = 0; i < 1080; i++)
+        // {
+        //     for (int j = 0; j < 1920; j++)
+        //     {
+        //         t.SetPixel(i,j, a);
+        //     }
+        // }
+        // spriteRenderer.sprite = Sprite.Create(t,new Rect(0,0,t.width,t.height), new Vector2(0.5f,0.5f) );
+        Debug.Log("Start2");
+        spriteRenderer.material.SetFloat("_LineLightingArrLen",0);
+        List<Vector4> lineLights = new List<Vector4>(60);
+        spriteRenderer.material.SetVectorArray("_LineLightingArr",lineLights);
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -64,6 +79,7 @@ public class Mask : MonoBehaviour
         var asH = Screen.height / 1920f;
         foreach (var obj in LightingObjects)
         {
+            
             Shining sh = obj.gameObject.GetComponent<Shining>();
             if (sh.LightShape == 1 && sh.P1 > 0)
             {
@@ -72,7 +88,7 @@ public class Mask : MonoBehaviour
             } 
             else if (sh.LightShape == 2 && sh.P1 > 0)
             {
-                
+                Debug.Log("Lighting Object Name=" + obj.name);
                 foreach (var e in sh.GetLineLightList())
                 {
                     lineLights.Add(e);
