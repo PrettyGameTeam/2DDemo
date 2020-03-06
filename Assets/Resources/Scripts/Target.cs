@@ -43,7 +43,7 @@ public class Target : MonoBehaviour
             if (sr != null && sr.sprite != null && sr.material != null && sr.material.color.a >= 1f)
             {
                 Debug.Log("wwwwwwwwww");
-                //TODO 弹出胜利框(发送胜利事件)
+                ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.Victory),null);
             }
         }   
     }

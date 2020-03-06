@@ -2,14 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+ using UnityEngine.SceneManagement;
+ using UnityEngine.UI;
 
-public class SceneControl : MonoBehaviour
+ public class SceneControl : MonoBehaviour
 {
     //当前被选中的组件名称
     private GameObject currentCheckObj = null;
     private GameObject choose;
     private GameObject stage;
     private GameObject mask;
+    private GameObject _victoryPanel;//菜单面板
+    private GameObject canvas;//UI面板
+    private Stage _stage;
+    private int _star = 1;
 
     //改变选中的组件
     public void ChangeCheckedObj(GameObject obj)
@@ -27,20 +33,116 @@ public class SceneControl : MonoBehaviour
         Debug.Log("set Choose parent obj");
     }
     
-    
     // Start is called before the first frame update
     void Start()
     {
+        Debug.LogWarning("SceneControl Start");
         choose = GameObject.Find("Choose");
         choose.SetActive(false);
+        canvas = GameObject.Find("Canvas");
+        _stage = ConfigManager.GetInstance().GetStage(UserDataManager.GetInstance().GetUserData().CurrentStage);
         //加载关卡
-        loadStage(null);
+        loadStage(_stage.PrefabName);
+        //加载菜单面板
+        _victoryPanel = (GameObject)Instantiate(Resources.Load("Prefabs/UI/VictoryPanel"));
+        _victoryPanel.transform.SetParent(canvas.transform);
+        _victoryPanel.transform.position = canvas.transform.position;
+        _victoryPanel.SetActive(false);
+    }
+
+    void OnDestroy(){
+        Debug.LogWarning("SceneControl Destroy");
+        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.Victory, OnVictory);
+        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.BackClick, OnBackClick);
+        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.RetryClick, OnRetryClick);
+        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.NextClick, OnNextClick);
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    void Awake()
+    {
+        Debug.LogWarning("SceneControl Awake");
+        //监听胜利事件
+        ObjectEventDispatcher.dispatcher.addEventListener (EventTypeName.Victory, OnVictory);
+        //监听菜单点击事件
+        ObjectEventDispatcher.dispatcher.addEventListener (EventTypeName.BackClick, OnBackClick);
+        //监听重玩事件
+        ObjectEventDispatcher.dispatcher.addEventListener (EventTypeName.RetryClick, OnRetryClick);
+        //监听下一关事件
+        ObjectEventDispatcher.dispatcher.addEventListener (EventTypeName.NextClick, OnNextClick);
+    }
+
+    private void OnVictory(UEvent evt)
+    {
+        Debug.Log("OnVictory");
+        //更改玩家数据
+        UserData userData = UserDataManager.GetInstance().GetUserData();
+        UserStage userStage = userData.GetUserStage(_stage.StageId);
+        bool needSave = false;
+        if (userStage.Star < _star)
+        {
+            needSave = true;
+            userStage.Star = _star;
+        }
+
+        if (!userStage.Completed)
+        {
+            userStage.Completed = true;
+            needSave = !userData.OpenStage(_stage.NextStage);
+        }
+
+        if (needSave){
+            DBManager.WriteUserData();
+        }
+        //展示胜利面板
+        _victoryPanel.SetActive(true);
+        //展示星星数
+        for (int i = 0; i <= 2; i++)
+        {
+            var star = _victoryPanel.transform.Find("StarNode" + i + "/Star");
+            var empty = _victoryPanel.transform.Find("StarNode" + i + "/Empty");
+            if (i + 1 <= _star){
+                star.gameObject.SetActive(true);
+                empty.gameObject.SetActive(false);
+            } 
+            else 
+            {
+                star.gameObject.SetActive(false);
+                empty.gameObject.SetActive(true);
+            }
+        }
+    }
+    
+    private void OnBackClick(UEvent evt)
+    {
+        Debug.Log("OnBackClick");
+        SceneManager.LoadScene("StageChoose");
+    }
+    
+    private void OnRetryClick(UEvent evt)
+    {
+        Debug.Log("OnRetryClick");
+        loadStage(_stage.PrefabName);
+        _victoryPanel.SetActive(false);
+    }
+    
+    private void OnNextClick(UEvent evt)
+    {
+        Debug.Log("OnNextClick");
+        if (_stage.NextStage == null){
+            //TODO 提示玩家已经是最后一关
+            return;
+        }
+        _stage = _stage.NextStage;
+        loadStage(_stage.PrefabName);
+        UserData userData = UserDataManager.GetInstance().GetUserData();
+        userData.CurrentStage = _stage.StageId;
+        _victoryPanel.SetActive(false);
     }
 
     private void ResetSceneControl()
@@ -73,14 +175,8 @@ public class SceneControl : MonoBehaviour
         }
 
         //加载prefab
-        stage = (GameObject)Instantiate(Resources.Load("Prefabs/" + stageName));
-        mask = (GameObject)Instantiate(Resources.Load("Prefabs/Mask"));
-    }
-
-    //恭喜胜利
-    public void Victory()
-    {
-        
+        stage = (GameObject)Instantiate(Resources.Load("Prefabs/Stage/" + stageName));
+        mask = (GameObject)Instantiate(Resources.Load("Prefabs/Objects/Mask"));
     }
 
 }

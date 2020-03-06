@@ -18,6 +18,8 @@ public class Gun : MonoBehaviour
     //光线
     private LineRenderer lineRenderer;
 
+    //默认红色光线 1  绿色光线 2 蓝色光线 3
+    public int color = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +27,38 @@ public class Gun : MonoBehaviour
         lineRenderer = Instantiate(lineObject).GetComponent<LineRenderer>();
         transform.eulerAngles = new Vector3(transform.eulerAngles.x,transform.eulerAngles.y,transform.eulerAngles.z + initAngle);
         lineRenderer.transform.parent = gameObject.transform;
+        Material m = null;
+        string path = "Materials/LineRed";
+        if (color == 1)    //红光
+        {
+            path = "Materials/LineRed";
+        } 
+        else if (color == 2) //绿光
+        {
+            path = "Materials/LineGreen";
+        }
+        else if (color == 3) //蓝光
+        {
+            path = "Materials/LineBlue";
+        }
+        lineRenderer.materials[0] = Resources.Load<Material>(path);
+    }
+
+    //改变光线颜色
+    public void ChangeColor(int changeColor)
+    {
+        if (changeColor == 1)
+        {
+            lineRenderer.materials[0] = Resources.Load<Material>("Materials/LineRed");
+        }
+        else if (changeColor == 2)
+        {
+            lineRenderer.materials[0] = Resources.Load<Material>("Materials/LineGreen");
+        }
+        else if (changeColor == 3)
+        {
+            lineRenderer.materials[0] = Resources.Load<Material>("Materials/LineBlue");
+        }
     }
 
     void CastLight()

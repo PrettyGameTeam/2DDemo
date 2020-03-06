@@ -20,7 +20,7 @@ public class ActiveObject : MonoBehaviour
     //帧动画
     public Sprite[] Frames;
 
-    //是否正在播放动画
+    //是否正在播放动画GetComponentInChildren
     private bool IsPlaying = false;
 
     //当前播放到的帧数
