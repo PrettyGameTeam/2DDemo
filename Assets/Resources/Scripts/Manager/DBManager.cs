@@ -10,7 +10,7 @@ public class DBManager
     //不同平台下StreamingAssets的路径是不同的，这里需要注意一下。  
     public static readonly string UserDataPath =  
     #if UNITY_ANDROID   //安卓  
-        Application.dataPath + "/Resources/UserData/";
+        Application.persistentDataPath + "/";
     #elif UNITY_IPHONE  //iPhone  
         Application.dataPath + "/Raw/";  
     #elif UNITY_STANDALONE_WIN || UNITY_EDITOR  //windows平台和web平台  
@@ -20,10 +20,17 @@ public class DBManager
     #endif    
 
     public static List<Chapter> LoadChapterConfig() {
+        WWW t_WWW = new WWW(Application.streamingAssetsPath + "/chapter.json");
+        while ( !t_WWW.isDone )
+        {
+
+        }
+        JsonData jd = JsonMapper.ToObject(t_WWW.text);
         //第一步 读取章节表
-        JsonReader js = new JsonReader(new StreamReader(Application.dataPath + "/Resources/Table/chapter.json"));
+        // JsonReader js = new JsonReader(new StreamReader(Application.streamingAssetsPath + "/chapter.json"));
         //第二步：将json文本转换成对象
-        JsonData jd = JsonMapper.ToObject(js);
+        
+        // JsonData jd = JsonMapper.ToObject(js);
         Debug.Log("LoadChapterConfig jd.ToJson()=" + jd.ToJson());
         List<Chapter> chapters = new List<Chapter>();
         for (int i = 0; i < jd.Count; i++)
@@ -36,10 +43,16 @@ public class DBManager
     }
     
     public static List<Stage> LoadStageConfig() {
+        WWW t_WWW = new WWW(Application.streamingAssetsPath + "/stage.json");
+        while ( !t_WWW.isDone )
+        {
+
+        }
+        JsonData jd = JsonMapper.ToObject(t_WWW.text);
         //第一步 读取章节表
-        JsonReader js = new JsonReader(new StreamReader(Application.dataPath + "/Resources/Table/stage.json"));
+        // JsonReader js = new JsonReader(new StreamReader(Application.streamingAssetsPath + "/stage.json"));
         //第二步：将json文本转换成对象
-        JsonData jd = JsonMapper.ToObject(js);
+        // JsonData jd = JsonMapper.ToObject(js);
         Debug.Log("LoadStageConfig jd.ToJson()=" + jd.ToJson());
         List<Stage> stages = new List<Stage>();
 
@@ -56,7 +69,6 @@ public class DBManager
     public static UserData ReadUserData()
     {
         string path = UserDataPath + "data.json";
-        Debug.Log("ReadUserData Application.persistentDataPath=" + Application.persistentDataPath);
         if (!System.IO.File.Exists(path))
         {
             Debug.Log("ReadUserData null");

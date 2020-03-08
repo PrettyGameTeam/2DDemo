@@ -20,6 +20,12 @@ public class ActiveObject : MonoBehaviour
     //帧动画
     public Sprite[] Frames;
 
+    //0 不指定照射的颜色 1 红色  2 绿色  3 蓝色
+    public int LineColor = 0;
+
+    //光源强度 贴图增强的数量
+    public int LineStrenth = 1;
+
     //是否正在播放动画GetComponentInChildren
     private bool IsPlaying = false;
 
@@ -162,9 +168,39 @@ public class ActiveObject : MonoBehaviour
     //光源照射时调用
     public void LightShining(LineRenderer line)
     {
-        lastShiningTime += Time.deltaTime * 1.01f;
         if (ActiveType == 2)
         {
+            var m = line.material;
+            bool colorMatch = false;    //颜色满足要求
+            bool strenthMatch = false;  //强度满足要求
+            if (LineColor == 0)
+            {
+                colorMatch = true;
+            } 
+            else if (m.name == "LineRed" && LineColor == 1)
+            {
+                colorMatch = true;
+            }
+            else if (m.name == "LineGreen" && LineColor == 2)
+            {
+                colorMatch = true;
+            }
+            else if (m.name == "LineBlue" && LineColor == 3)
+            {
+                colorMatch = true;
+            }
+
+
+            if (line.materials.Length >= LineStrenth)
+            {
+                strenthMatch = true;
+            }
+
+            if (!colorMatch || !strenthMatch){
+                return;
+            }
+
+
             if (!IsPlaying)
             {
                 lastShiningTime += Time.deltaTime * 1.01f;
@@ -192,5 +228,6 @@ public class ActiveObject : MonoBehaviour
                 }
             }
         }
+        lastShiningTime += Time.deltaTime * 1.01f;
     }
 }

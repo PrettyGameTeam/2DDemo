@@ -28,20 +28,22 @@ public class Gun : MonoBehaviour
         transform.eulerAngles = new Vector3(transform.eulerAngles.x,transform.eulerAngles.y,transform.eulerAngles.z + initAngle);
         lineRenderer.transform.parent = gameObject.transform;
         Material m = null;
-        string path = "Materials/LineRed";
+        string path = "Materials/LightRed";
+        Debug.LogWarning("Gun [" + gameObject.name + "] start color = " + color);
         if (color == 1)    //红光
         {
-            path = "Materials/LineRed";
+            path = "Materials/LightRed";
         } 
         else if (color == 2) //绿光
         {
-            path = "Materials/LineGreen";
+            path = "Materials/LightGreen";
         }
         else if (color == 3) //蓝光
         {
-            path = "Materials/LineBlue";
+            path = "Materials/LightBlue";
         }
-        lineRenderer.materials[0] = Resources.Load<Material>(path);
+        lineRenderer.material = Instantiate(Resources.Load<Material>(path));
+        Debug.LogWarning("Gun [" + gameObject.name + "] start color = " + color);
     }
 
     //改变光线颜色
@@ -49,15 +51,15 @@ public class Gun : MonoBehaviour
     {
         if (changeColor == 1)
         {
-            lineRenderer.materials[0] = Resources.Load<Material>("Materials/LineRed");
+            lineRenderer.materials[0] = Resources.Load<Material>("Materials/LightRed");
         }
         else if (changeColor == 2)
         {
-            lineRenderer.materials[0] = Resources.Load<Material>("Materials/LineGreen");
+            lineRenderer.materials[0] = Resources.Load<Material>("Materials/LightGreen");
         }
         else if (changeColor == 3)
         {
-            lineRenderer.materials[0] = Resources.Load<Material>("Materials/LineBlue");
+            lineRenderer.materials[0] = Resources.Load<Material>("Materials/LightBlue");
         }
     }
 
