@@ -22,6 +22,8 @@ public class Chapter : TableBase
 
     public Chapter NextChapter { get; set; }
 
+    public Chapter PreChapter { get; set; }
+
     public void parseJson(JsonData jd)
     {
         ChapterId = Int32.Parse(jd["ChapterId"].ToString());

@@ -34,4 +34,23 @@ public class MenuClickFunction : MonoBehaviour
     {
         ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.NextClick), null);
     }
+
+    //点击下一章
+    public void NextChapterClick()
+    {
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.NextChapterClick), null);
+    }
+
+    //点击上一章
+    public void PreChapterClick()
+    {
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.PreChapterClick), null);
+    }
+
+    //点击一键通关
+    public void DebugOneKeyClick()
+    {
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.DebugOneKeyClick), null);
+    }
+
 }

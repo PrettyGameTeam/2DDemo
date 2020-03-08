@@ -47,6 +47,16 @@ public class UserData
         return null;
     }
 
+    public UserChapter GetUserChapter(int chapterId){
+        foreach (var c in Chapters)
+        {
+            if (c.ChapterId == chapterId){
+                return c;
+            }
+        }
+        return null;
+    }
+
     public bool OpenStage(Stage stage){
         //是否有当前章节
         UserChapter uc = null;
@@ -74,6 +84,8 @@ public class UserData
             UserChapter nuc = new UserChapter();
             nuc.Stages = new List<UserStage>();
             nuc.ChapterId = stage.ChapterId;
+            uc = nuc;
+            Chapters.Add(uc);
         }
 
         UserStage us = new UserStage();
