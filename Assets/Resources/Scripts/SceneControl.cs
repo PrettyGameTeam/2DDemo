@@ -15,7 +15,7 @@ using UnityEngine;
     private GameObject _victoryPanel;//菜单面板
     private GameObject canvas;//UI面板
     private Stage _stage;
-    private int _star = 1;
+    private int _star = 0;
 
     //改变选中的组件
     public void ChangeCheckedObj(GameObject obj)
@@ -56,6 +56,8 @@ using UnityEngine;
         ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.BackClick, OnBackClick);
         ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.RetryClick, OnRetryClick);
         ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.NextClick, OnNextClick);
+        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.StarShining, OnStarShining);
+        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.StarOutShining, OnStarOutShining);
     }
 
     // Update is called once per frame
@@ -75,6 +77,23 @@ using UnityEngine;
         ObjectEventDispatcher.dispatcher.addEventListener (EventTypeName.RetryClick, OnRetryClick);
         //监听下一关事件
         ObjectEventDispatcher.dispatcher.addEventListener (EventTypeName.NextClick, OnNextClick);
+        //监听星星被照射
+        ObjectEventDispatcher.dispatcher.addEventListener (EventTypeName.StarShining, OnStarShining);
+        //监听星星脱离照射
+        ObjectEventDispatcher.dispatcher.addEventListener (EventTypeName.StarOutShining, OnStarOutShining);
+    }
+
+    private void OnStarShining(UEvent evt)
+    {
+        _star++;
+        Debug.Log("OnStarShining _star=" + _star);
+        
+    }
+
+    private void OnStarOutShining(UEvent evt)
+    {
+        _star--;
+        Debug.Log("OnStarOutShining _star=" + _star);
     }
 
     private void OnVictory(UEvent evt)

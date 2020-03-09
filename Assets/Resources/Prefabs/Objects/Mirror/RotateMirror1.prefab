@@ -196,6 +196,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 517a4122aea62484bbe046bd36c3e21d, type: 3}
   - {fileID: 21300000, guid: 475b33f0fc46c44438beaf2cd8ea374f, type: 3}
   - {fileID: 21300000, guid: 4318dde69425a8943a6f602404c72802, type: 3}
+  LineColor: 0
+  LineStrenth: 1
 --- !u!60 &3834134086343238946
 PolygonCollider2D:
   m_ObjectHideFlags: 0

@@ -16,6 +16,7 @@ MonoBehaviour:
     type: 3}
   initAngle: 0
   color: 1
+  LineStrenth: 1
 --- !u!1 &2620726536709093186
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,12 +311,12 @@ PrefabInstance:
     - target: {fileID: 1595393973045481037, guid: 4fcebd2aaafbfbb47b4b686aaf4a16e0,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 1595393973045481037, guid: 4fcebd2aaafbfbb47b4b686aaf4a16e0,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 1595393973045481037, guid: 4fcebd2aaafbfbb47b4b686aaf4a16e0,
         type: 3}
@@ -335,7 +336,7 @@ PrefabInstance:
     - target: {fileID: 1595393973045481037, guid: 4fcebd2aaafbfbb47b4b686aaf4a16e0,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 1595393973045481037, guid: 4fcebd2aaafbfbb47b4b686aaf4a16e0,
         type: 3}

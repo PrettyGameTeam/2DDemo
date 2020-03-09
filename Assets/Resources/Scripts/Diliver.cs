@@ -6,7 +6,7 @@ using UnityEngine;
 public class Diliver : MonoBehaviour
 {
     //光线输出点
-    public GameObject outObject;
+    public GameObject Out;
     
     //光源照射累计计时 Update每次执行-1TimeDelta,光源照射时每次+2TimeDelta
     private float lastShiningTime = 0;
@@ -23,19 +23,19 @@ public class Diliver : MonoBehaviour
         lastShiningTime -= Time.deltaTime;
         if (lastShiningTime > 0)
         {
-            outObject.SetActive(true);
+            Out.SetActive(true);
         }
         else
         {
-            if (outObject.activeSelf)
+            if (Out.activeSelf)
             {
-                var gun = outObject.GetComponent<Gun>();
+                var gun = Out.GetComponent<Gun>();
                 if (gun != null)
                 {
                     gun.ResetLight();                
                 }
             }
-            outObject.SetActive(false);
+            Out.SetActive(false);
             lastShiningTime = 0;
         }
     }

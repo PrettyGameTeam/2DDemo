@@ -21,56 +21,70 @@ public class Gun : MonoBehaviour
     //默认红色光线 1  绿色光线 2 蓝色光线 3
     public int color = 1;
 
+    //光源强度 贴图增强的数量
+    public int LineStrenth = 1;
+
+    private bool _dirty = false;
+
+    private Vector2 _shotDir = Vector2.zero;
+
     // Start is called before the first frame update
     void Start()
     {
         lineRenderer = Instantiate(lineObject).GetComponent<LineRenderer>();
         transform.eulerAngles = new Vector3(transform.eulerAngles.x,transform.eulerAngles.y,transform.eulerAngles.z + initAngle);
         lineRenderer.transform.parent = gameObject.transform;
-        Material m = null;
-        string path = "Materials/LightRed";
-        Debug.LogWarning("Gun [" + gameObject.name + "] start color = " + color);
-        if (color == 1)    //红光
-        {
-            path = "Materials/LightRed";
-        } 
-        else if (color == 2) //绿光
-        {
-            path = "Materials/LightGreen";
-        }
-        else if (color == 3) //蓝光
-        {
-            path = "Materials/LightBlue";
-        }
-        lineRenderer.material = Instantiate(Resources.Load<Material>(path));
+        // Material m = null;
+        // lineRenderer.material = Resources.Load<Material>(path);
+        // lineRenderer.material = Instantiate(Resources.Load<Material>(path));
+        _dirty = true;
         Debug.LogWarning("Gun [" + gameObject.name + "] start color = " + color);
     }
 
     //改变光线颜色
-    public void ChangeColor(int changeColor)
+    public void SetLightInfo(int cl,int strenth)
     {
-        if (changeColor == 1)
+        string path = "Materials/LightRed";
+        Debug.LogWarning("Gun [" + gameObject.name + "] start color = " + cl);
+        if (cl == 1)    //红光
         {
-            lineRenderer.materials[0] = Resources.Load<Material>("Materials/LightRed");
-        }
-        else if (changeColor == 2)
+            path = "Materials/LightRed";
+        } 
+        else if (cl == 2) //绿光
         {
-            lineRenderer.materials[0] = Resources.Load<Material>("Materials/LightGreen");
+            path = "Materials/LightGreen";
         }
-        else if (changeColor == 3)
+        else if (cl == 3) //蓝光
         {
-            lineRenderer.materials[0] = Resources.Load<Material>("Materials/LightBlue");
+            path = "Materials/LightBlue";
         }
+        // var ma = Resources.Load<Material>(path); 
+        Material[] ms = new Material[strenth];
+        for (int i = 0; i < strenth; i++){
+            ms[i] = Resources.Load<Material>(path);
+        }
+        lineRenderer.materials = ms;
+    }
+
+    public void SetShotDir(Vector2 dir){
+        _shotDir = dir;
+    }
+
+    public void SetDirty(){
+        _dirty = true;
     }
 
     void CastLight()
     {
         linePoints.Clear();
         //光线起始点
-        var startPoint = transform.position;
+        Vector2 startPoint = transform.position;
 
         //光线射出方向
-        var direction = transform.up;
+        Vector2 direction = (Vector2)transform.up;
+        if (_shotDir != Vector2.zero){
+            direction = _shotDir;
+        }
         
         linePoints.Add(startPoint);
 
@@ -101,7 +115,7 @@ public class Gun : MonoBehaviour
                     direction = re.GetOutDirection(inDirection, hit.normal);
                     re.LightShining(hit.point);
                     //击中点作为新的起点
-                    startPoint = (Vector3)hit.point + direction * 0.01f;
+                    startPoint = hit.point + direction * 0.01f;
                 }
                 
                 ActiveObject ao = obj.GetComponent<ActiveObject>();
@@ -117,6 +131,20 @@ public class Gun : MonoBehaviour
                     Debug.Log("Exec Diliver LightShining");
                     di.LightShining(lineRenderer);
                 }
+
+                ThroughPass th = obj.GetComponent<ThroughPass>();
+                if (th != null)
+                {
+                    Debug.Log("Exec ThroughPass LightShining");
+                    th.LightShining(lineRenderer,hit.point,linePoints[linePoints.Count-1]-linePoints[linePoints.Count-2],color,LineStrenth);
+                }
+
+                Collections co = obj.GetComponent<Collections>();
+                if (co != null)
+                {
+                    Debug.Log("Exec Collections LightShining");
+                    co.LightShining();
+                }
             }
             else
             {
@@ -130,6 +158,11 @@ public class Gun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (_dirty){
+            _dirty = false;
+            SetLightInfo(color,LineStrenth);
+        }
+
         lineRenderer.gameObject.SetActive(true);
         CastLight();
         lineRenderer.positionCount = linePoints.Count;
