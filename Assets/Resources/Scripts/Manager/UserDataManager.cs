@@ -28,6 +28,14 @@ public class UserDataManager
         }
     }
 
+    public void OneKeyOpen()
+    {
+        foreach (var st in ConfigManager.GetInstance().GetAllStages())
+        {
+            _userData.OpenStage(st);
+        }
+    }
+
     private void InitUserData()
     {
         _userData = new UserData();

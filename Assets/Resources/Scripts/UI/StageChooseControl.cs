@@ -35,6 +35,9 @@ public class StageChooseControl : MonoBehaviour
         ConfigManager.GetInstance().LoadConfig();
         UserDataManager.GetInstance().LoadUserData(); 
         ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.PlayStage,OnPlayStage);
+        ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.DebugOneKeyClick,OnOneKey);
+        ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.NextChapterClick,OnNextChapterClick);
+        ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.PreChapterClick,OnPreChapterClick);
     }
 
     public void LoadChapter(UserChapter userChapter)
@@ -74,5 +77,44 @@ public class StageChooseControl : MonoBehaviour
         
         // s.PrefabName  
         SceneManager.LoadScene("Stage", LoadSceneMode.Single);
+    }
+
+    private void OnOneKey(UEvent evt)
+    {
+        Debug.Log("OnOneKey");
+        //查找到点击的关卡
+        UserDataManager.GetInstance().OneKeyOpen();
+        UserChapter uc = UserDataManager.GetInstance().GetUserData().GetUserChapter(_chapter.ChapterId);
+        LoadChapter(uc);
+    }
+
+    private void OnNextChapterClick(UEvent evt)
+    {
+        Debug.Log("OnNextChapterClick");
+        //查找到点击的关卡
+        if (_chapter.NextChapter == null){
+            return;
+        }
+        UserChapter uc = UserDataManager.GetInstance().GetUserData().GetUserChapter(_chapter.NextChapter.ChapterId);
+        if (uc == null){
+            return;
+        }
+        _chapter = _chapter.NextChapter;
+        LoadChapter(uc);
+    }
+
+    private void OnPreChapterClick(UEvent evt)
+    {
+        Debug.Log("OnNextChapterClick");
+        //查找到点击的关卡
+        if (_chapter.PreChapter == null){
+            return;
+        }
+        UserChapter uc = UserDataManager.GetInstance().GetUserData().GetUserChapter(_chapter.PreChapter.ChapterId);
+        if (uc == null){
+            return;
+        }
+        _chapter = _chapter.PreChapter;
+        LoadChapter(uc);
     }
 }

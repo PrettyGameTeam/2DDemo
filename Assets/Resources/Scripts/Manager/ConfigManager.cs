@@ -56,6 +56,7 @@ public class ConfigManager
             });
             if (v.NextChapterId > 0){
                 v.NextChapter = _chapterMap[v.NextChapterId];
+                v.NextChapter.PreChapter = v;
             }
         }
 
@@ -81,6 +82,20 @@ public class ConfigManager
             return o;
         });
         return chapters;
+    }
+
+    public List<Stage> GetAllStages()
+    {
+        List<Stage> stages = new List<Stage>();
+        foreach (var kv in _stageMap)
+        {
+            stages.Add(kv.Value);
+        }
+        stages.Sort((a, b) => {
+            var o = a.StageId - b.StageId;
+            return o;
+        });
+        return stages;
     }
 
     public Chapter GetChapter(int chapterId)
