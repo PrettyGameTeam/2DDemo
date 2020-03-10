@@ -9,6 +9,8 @@ public class ThroughPass : MonoBehaviour
 {
     public GameObject Out;//穿透过后的光线发射点(也是发光点)
 
+    public bool UseOriginLight = true;  //是否沿用射入的光线的属性
+
     private float lastShiningTime = 0f;
 
     // Start is called before the first frame update
@@ -74,8 +76,10 @@ public class ThroughPass : MonoBehaviour
                     var gun = Out.GetComponent<Gun>();
                     if (gun != null)
                     {
-                        gun.color = color;
-                        gun.LineStrenth = strength;
+                        if (UseOriginLight){
+                            gun.color = color;
+                            gun.LineStrenth = strength;
+                        }
                         // gun.SetLightInfo(color,strength);     
                         gun.SetDirty();   
                         gun.SetShotDir(dir);        

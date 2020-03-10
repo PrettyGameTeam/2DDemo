@@ -28,17 +28,23 @@ public class Gun : MonoBehaviour
 
     private Vector2 _shotDir = Vector2.zero;
 
+    private GameObject _diliver;
+
     // Start is called before the first frame update
     void Start()
     {
-        lineRenderer = Instantiate(lineObject).GetComponent<LineRenderer>();
-        transform.eulerAngles = new Vector3(transform.eulerAngles.x,transform.eulerAngles.y,transform.eulerAngles.z + initAngle);
-        lineRenderer.transform.parent = gameObject.transform;
         // Material m = null;
         // lineRenderer.material = Resources.Load<Material>(path);
         // lineRenderer.material = Instantiate(Resources.Load<Material>(path));
         _dirty = true;
         Debug.LogWarning("Gun [" + gameObject.name + "] start color = " + color);
+    }
+
+    void Awake() {
+        lineRenderer = Instantiate(lineObject).GetComponent<LineRenderer>();
+        transform.eulerAngles = new Vector3(transform.eulerAngles.x,transform.eulerAngles.y,transform.eulerAngles.z + initAngle);
+        lineRenderer.transform.parent = gameObject.transform;
+        SetLightInfo(color,LineStrenth);
     }
 
     //改变光线颜色
@@ -66,11 +72,23 @@ public class Gun : MonoBehaviour
         lineRenderer.materials = ms;
     }
 
-    public void SetShotDir(Vector2 dir){
+    public void SetDiliver(GameObject obj)
+    {
+        _diliver = obj;
+    }
+
+    public GameObject GetDiliver()
+    {
+        return _diliver;
+    }
+
+    public void SetShotDir(Vector2 dir)
+    {
         _shotDir = dir;
     }
 
-    public void SetDirty(){
+    public void SetDirty()
+    {
         _dirty = true;
     }
 
@@ -171,6 +189,10 @@ public class Gun : MonoBehaviour
 
     public void ResetLight()
     {
+        if (_dirty){
+            _dirty = false;
+            SetLightInfo(color,LineStrenth);
+        }
         linePoints.Clear();
         lineRenderer.positionCount = 0;
     }
