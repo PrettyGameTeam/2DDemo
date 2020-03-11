@@ -67,6 +67,7 @@
     <Compile Include="Assets\Resources\Scripts\Block.cs" />
     <Compile Include="Assets\Resources\Scripts\CaneraMask.cs" />
     <Compile Include="Assets\Resources\Scripts\ClickAndRotate.cs" />
+    <Compile Include="Assets\Resources\Scripts\Collections.cs" />
     <Compile Include="Assets\Resources\Scripts\Data\UserChapter.cs" />
     <Compile Include="Assets\Resources\Scripts\Data\UserData.cs" />
     <Compile Include="Assets\Resources\Scripts\Data\UserStage.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Assets\Resources\Scripts\TableData\Stage.cs" />
     <Compile Include="Assets\Resources\Scripts\TableData\TableBase.cs" />
     <Compile Include="Assets\Resources\Scripts\Target.cs" />
+    <Compile Include="Assets\Resources\Scripts\ThroughPass.cs" />
     <Compile Include="Assets\Resources\Scripts\UI\ChapterNode.cs" />
     <Compile Include="Assets\Resources\Scripts\UI\MenuClickFunction.cs" />
     <Compile Include="Assets\Resources\Scripts\UI\StageChooseControl.cs" />
