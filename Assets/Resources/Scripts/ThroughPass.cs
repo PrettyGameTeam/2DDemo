@@ -97,8 +97,10 @@ public class ThroughPass : MonoBehaviour
                         var gun = Out.GetComponent<Gun>();
                         if (gun != null)
                         {
-                            gun.color = color;
-                            gun.LineStrenth = strength;
+                            if (UseOriginLight){
+                                gun.color = color;
+                                gun.LineStrenth = strength;
+                            }
                             // gun.SetLightInfo(color,strength);     
                             gun.SetDirty();   
                             gun.SetShotDir(dir);        

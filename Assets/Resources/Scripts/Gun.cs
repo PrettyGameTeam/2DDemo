@@ -163,6 +163,13 @@ public class Gun : MonoBehaviour
                     Debug.Log("Exec Collections LightShining");
                     co.LightShining();
                 }
+
+                LightCondition lc = obj.GetComponent<LightCondition>();
+                if (lc != null)
+                {
+                    Debug.Log("Exec LightCondition LightShining");
+                    lc.LightShining(color,LineStrenth);
+                }
             }
             else
             {
