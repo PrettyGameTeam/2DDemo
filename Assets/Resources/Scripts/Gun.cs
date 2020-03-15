@@ -170,6 +170,13 @@ public class Gun : MonoBehaviour
                     Debug.Log("Exec LightCondition LightShining");
                     lc.LightShining(color,LineStrenth);
                 }
+
+                FrameAni fa = obj.GetComponent<FrameAni>();
+                if (fa != null)
+                {
+                    Debug.Log("Exec FrameAni LightShining");
+                    fa.LightShining();
+                }
             }
             else
             {

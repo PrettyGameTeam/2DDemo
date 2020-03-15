@@ -10,6 +10,14 @@ public class FrameAni : MonoBehaviour
     public float DeltaPerFrame = 0.033f;
     public Sprite[] Frames;
 
+    //激活后是否自动激活
+    public bool AutoPlay = false;
+
+    public float CallbackTime = 0f;
+
+    //循环播放
+    public bool Repeat = false;
+
     private int _status = 0; //动画状态 0 初始状态(隐藏) 1 播放中 2 播放完成
 
     private int _direction = 1; //1 正向 2 反向
@@ -22,32 +30,87 @@ public class FrameAni : MonoBehaviour
 
     private GameObject _driveObj;//驱动此动画脚本的组件
 
-    private bool _isActive;//是否已被激活
+    private float _totalPlayTime = 0f;  //总计播放时间
+
+    private bool _lightControl = false; //被激活后是否采用光照控制
+
+    private float _lastShiningTime = 0f;  //持续光照时间
 
     // Start is called before the first frame update
     void Start()
     {
         _aniSpr = gameObject.GetComponent<SpriteRenderer>();
+        if (AutoPlay){
+            _status = 1;//设置为播放
+            _direction = 1; //正向播放
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        Debug.Log("Update _lastShiningTime = " + _lastShiningTime + ",_totalPlayTime=" + _totalPlayTime + ",_direction=" + _direction);
+        if (_lightControl){
+            _lastShiningTime -= Time.deltaTime;
+            if (_lastShiningTime <= 0)
+            {
+                _lastShiningTime = 0;
+                if (_direction == 1 && _status == 1){
+                    PlayFallback(_driveObj);
+                }
+            }
+        }
+        
+        
         //正在播放中
         if (_status == 1){
+            Debug.Log("Update status=" + _status + ",direction=" + _direction + ",totalPlayTime=" + _totalPlayTime);
             //正向播放到底
             if (_index == Frames.Length - 1 && _direction == 1){
-                _status = 2;    //设置播放状态为播放结束
-                _playTime = 0;
-                MultiActive ma = _driveObj.GetComponent<MultiActive>();
-                ma.ForwardOver();
+                //非循环播放
+                if(!Repeat){
+                    _status = 2;    //设置播放状态为播放结束
+                    _playTime = 0;    
+                    PlayOver();
+                } 
+                else 
+                {
+                    if (_playTime >= DeltaPerFrame){
+                        _index = 0;
+                        _aniSpr.sprite = Frames[_index];
+                        _playTime = 0;
+                    }
+                    _playTime += Time.deltaTime;
+                    if (CallbackTime > 0f){
+                        _totalPlayTime += Time.deltaTime;
+                        if (_totalPlayTime >= CallbackTime){
+                            PlayOver(); 
+                        }
+                    }
+                }
             } 
             //反向播放到底
             else if (_index == 0 && _direction == 2){
-                _status = 0;    //设置播放状态为播放结束
-                _playTime = 0;
-                MultiActive ma = _driveObj.GetComponent<MultiActive>();
-                ma.FallbackOver();
+                if(!Repeat){
+                    _status = 0;    //设置播放状态为播放结束
+                    _playTime = 0;
+                    PlayOver();
+                }
+                else 
+                {   
+                    if (_playTime >= DeltaPerFrame){
+                        _index = Frames.Length - 1;
+                        _aniSpr.sprite = Frames[_index];
+                        _playTime = 0;
+                    }
+                    _playTime += Time.deltaTime;
+                    if (CallbackTime > 0f){
+                        _totalPlayTime -= Time.deltaTime;
+                        if (_totalPlayTime <= 0){
+                            PlayOver(); 
+                        }
+                    }
+                }
             }
             else {
                 if (_playTime >= DeltaPerFrame){
@@ -56,8 +119,38 @@ public class FrameAni : MonoBehaviour
                     _playTime = 0;
                 }
                 _playTime += Time.deltaTime;
+                if (CallbackTime > 0f){
+                    _totalPlayTime += _direction == 1 ? Time.deltaTime : -Time.deltaTime;
+                    if (_totalPlayTime >= CallbackTime){
+                        PlayOver(); 
+                    }
+                    else if (_totalPlayTime <= 0 && _direction == 2)
+                    {
+                        PlayOver(); 
+                    }
+                }
             }
         }
+    }
+
+    public void PlayOver()
+    {
+        if (_driveObj == null){
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            MultiActive ma = _driveObj.GetComponent<MultiActive>();
+            if (_direction == 1){
+                _status = 2;
+                ma.ForwardOver();
+            }
+            else if (_direction == 2){
+                _status = 0;
+                ma.FallbackOver();
+            }
+        }
+        _totalPlayTime = 0;
     }
 
     public void PlayForward(GameObject gameObject)
@@ -72,6 +165,7 @@ public class FrameAni : MonoBehaviour
         _direction = 1;
         _index = _index == 0 ? 1 :_index;
         _status = 1;
+        _totalPlayTime = 0;
     }
 
     public void PlayFallback(GameObject gameObject)
@@ -86,26 +180,40 @@ public class FrameAni : MonoBehaviour
         _direction = 2;
         _index = _index == Frames.Length - 1 ? Frames.Length - 2 :_index;
         _status = 1;
+        // _totalPlayTime = 0;
     }
 
     //是否播放结束
     public bool IsEnd(){
         return _status == 2;
-        //正向播放且已到最后一帧
-        // if (_index == Frames.Length - 1 && _direction == 1){
-        //     MultiActive ma = _driveObj.GetComponent<MultiActive>();
-        //     ma.ForwardOver();
-        // }
-        // return false;
     }
 
     public bool IsRollBack(){
         return _status == 0;
-        //反向播放且已到第一帧
-        // if (_index == 0 && _direction == 2){
-        //     MultiActive ma = _driveObj.GetComponent<MultiActive>();
-        //     ma.FallbackOver();
-        // }
-        // return false;
+    }
+
+
+    public void LightShining()
+    {
+        if (_lightControl){
+            if (_lastShiningTime == 0f)
+            {
+                _lastShiningTime += Time.deltaTime * 2f;
+            }
+            else
+            {
+                _lastShiningTime += Time.deltaTime;
+            }
+
+            if (_lastShiningTime >= 0 && _status == 1 && _direction == 2){
+                _direction = 1;
+                _index = _index == 0 ? 1 :_index;
+            }
+        }
+    }
+
+    //开启光照控制
+    public void SwitchLightControl(bool isControl){
+        _lightControl = isControl;
     }
 }

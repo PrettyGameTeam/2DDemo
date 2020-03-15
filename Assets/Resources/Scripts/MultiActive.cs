@@ -13,6 +13,9 @@ public class MultiActive : MonoBehaviour
     //条件激活后透明的组件
     public GameObject[] HideObjs;  
 
+    //是否设置为不显示作为隐藏手段
+    public bool HideWithUnactive = false;
+
     //播放动画所用的组件
     public GameObject[] AniObjs;
 
@@ -28,11 +31,13 @@ public class MultiActive : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _hideColors = new Color[HideObjs.Length];
-        for (int i = 0; i < _hideColors.Length; i++)
-        {
-            SpriteRenderer sr = HideObjs[i].GetComponent<SpriteRenderer>();
-            _hideColors[i] = sr.material.color;
+        if (!HideWithUnactive){
+            _hideColors = new Color[HideObjs.Length];
+            for (int i = 0; i < _hideColors.Length; i++)
+            {
+                SpriteRenderer sr = HideObjs[i].GetComponent<SpriteRenderer>();
+                _hideColors[i] = sr.material.color;
+            }
         }
     }
 
@@ -76,12 +81,22 @@ public class MultiActive : MonoBehaviour
     public void SetHideObjsTransparent(){
         for (int i = 0; i < HideObjs.Length; i++)
         {
-            SpriteRenderer sr = HideObjs[i].GetComponent<SpriteRenderer>();
-            sr.material.color = new Color(1,1,1,0);
+            if (HideWithUnactive){
+                HideObjs[i].SetActive(false);
+            }
+            else 
+            {
+                SpriteRenderer sr = HideObjs[i].GetComponent<SpriteRenderer>();
+                sr.material.color = new Color(1,1,1,0);
+            }
         }
 
         foreach (var obj in AniObjs)
         {
+            if (HideWithUnactive){
+                //开启光源控制
+                obj.GetComponent<FrameAni>().SwitchLightControl(true);
+            }
             obj.SetActive(true);
         }
     }
@@ -158,13 +173,23 @@ public class MultiActive : MonoBehaviour
             //设置隐藏的物体显示
             for (int i = 0; i < HideObjs.Length; i++)
             {
-                SpriteRenderer sr = HideObjs[i].GetComponent<SpriteRenderer>();
-                sr.material.color = _hideColors[i];
+                if (HideWithUnactive){
+                    HideObjs[i].SetActive(true);
+                } 
+                else 
+                {
+                    SpriteRenderer sr = HideObjs[i].GetComponent<SpriteRenderer>();
+                    sr.material.color = _hideColors[i];
+                }
+                
             }
 
             //设置动画组件隐藏
             foreach (var obj in AniObjs)
             {
+                if (HideWithUnactive){
+                    obj.GetComponent<FrameAni>().SwitchLightControl(false);
+                }
                 obj.SetActive(false);
             }
 
