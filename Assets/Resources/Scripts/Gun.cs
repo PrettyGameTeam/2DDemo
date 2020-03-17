@@ -30,6 +30,10 @@ public class Gun : MonoBehaviour
 
     private GameObject _diliver;
 
+    private List<GameObject> _shiningPoints = new List<GameObject>();
+
+    private List<GameObject> _guns = new List<GameObject>();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -64,12 +68,18 @@ public class Gun : MonoBehaviour
         {
             path = "Materials/LightBlue";
         }
-        // var ma = Resources.Load<Material>(path); 
-        Material[] ms = new Material[strenth];
-        for (int i = 0; i < strenth; i++){
-            ms[i] = Resources.Load<Material>(path);
+
+        if (strenth > 1){
+            path = path + "2";
         }
-        lineRenderer.materials = ms;
+
+        var ma = Resources.Load<Material>(path); 
+        lineRenderer.material = ma;
+        // Material[] ms = new Material[strenth];
+        // for (int i = 0; i < strenth; i++){
+        //     ms[i] = Resources.Load<Material>(path);
+        // }
+        // lineRenderer.materials = ms;
     }
 
     public void SetDiliver(GameObject obj)
@@ -92,8 +102,33 @@ public class Gun : MonoBehaviour
         _dirty = true;
     }
 
+    public void ClearDirty(int spIdx,int gunIdx){
+        Debug.Log("ClearDirty spIdx=" + spIdx + ",_shiningPoints.Count=" + _shiningPoints.Count + ",gunIdx=" + gunIdx + ",_guns.Count=" + _guns.Count);
+        if (spIdx < _shiningPoints.Count){
+            for (int i = _shiningPoints.Count - 1; i >= spIdx; i--)
+            {
+                var it = _shiningPoints[i];
+                ObjectPool.GetInstance().PutShiningPoint(it);
+                _shiningPoints.RemoveAt(i);
+                it.transform.parent = null;
+            }
+        }
+
+        if (gunIdx < _guns.Count){
+            for (int i = _guns.Count - 1; i >= gunIdx; i--)
+            {
+                var gu = _guns[i];
+                ObjectPool.GetInstance().PutGun(gu);
+                _guns.RemoveAt(i);
+                gu.transform.parent = null;
+            }
+        }
+    }
+
     void CastLight()
     {
+        int spIdx = 0; 
+        int gunIdx = 0; 
         linePoints.Clear();
         //光线起始点
         Vector2 startPoint = transform.position;
@@ -107,84 +142,96 @@ public class Gun : MonoBehaviour
         linePoints.Add(startPoint);
 
         RaycastHit2D hit = new RaycastHit2D();
-        var needReflect = false;
-        do
+        // do
+        // {
+        hit = Physics2D.Raycast(startPoint, direction);
+        if (hit.collider != null)
         {
-            hit = Physics2D.Raycast(startPoint, direction);
-            if (hit.collider != null)
-            {
-                linePoints.Add(hit.point);
-                var obj = hit.collider.gameObject;
-                Block bl = obj.GetComponent<Block>();
-                //阻挡光线
-                if (bl != null)
-                {
-                    needReflect = false;
-                    bl.LightShining(hit.point);
-                }
-                
-                Reflect re = obj.GetComponent<Reflect>();
-                if (re != null)
-                {
-                    needReflect = true;
-                    //利用Vector2的反射函数来计算反射方向
-                    
-                    var inDirection = hit.point - (Vector2) startPoint;
-                    direction = re.GetOutDirection(inDirection, hit.normal);
-                    re.LightShining(hit.point);
-                    //击中点作为新的起点
-                    startPoint = hit.point + direction * 0.01f;
-                }
-                
-                ActiveObject ao = obj.GetComponent<ActiveObject>();
-                if (ao != null)
-                {
-                    Debug.Log("Exec LightShining");
-                    ao.LightShining(lineRenderer);
-                }
-                
-                Diliver di = obj.GetComponent<Diliver>();
-                if (di != null)
-                {
-                    Debug.Log("Exec Diliver LightShining");
-                    di.LightShining(lineRenderer);
-                }
-
-                ThroughPass th = obj.GetComponent<ThroughPass>();
-                if (th != null)
-                {
-                    Debug.Log("Exec ThroughPass LightShining");
-                    th.LightShining(lineRenderer,hit.point,linePoints[linePoints.Count-1]-linePoints[linePoints.Count-2],color,LineStrenth);
-                }
-
-                Collections co = obj.GetComponent<Collections>();
-                if (co != null)
-                {
-                    Debug.Log("Exec Collections LightShining");
-                    co.LightShining();
-                }
-
-                LightCondition lc = obj.GetComponent<LightCondition>();
-                if (lc != null)
-                {
-                    Debug.Log("Exec LightCondition LightShining");
-                    lc.LightShining(color,LineStrenth);
-                }
-
-                FrameAni fa = obj.GetComponent<FrameAni>();
-                if (fa != null)
-                {
-                    Debug.Log("Exec FrameAni LightShining");
-                    fa.LightShining();
-                }
+            linePoints.Add(hit.point);
+            //添加击中点闪光
+            if (spIdx >= _shiningPoints.Count){
+                _shiningPoints.Add(ObjectPool.GetInstance().GetShiningPoint());
             }
-            else
+            GameObject gObj = _shiningPoints[spIdx];
+            gObj.transform.parent = transform;
+            gObj.transform.position = hit.point; 
+            spIdx++;
+            
+            var obj = hit.collider.gameObject;
+            LightCondition lc = obj.GetComponent<LightCondition>();
+            bool isMatch = true;
+            if (lc != null)
             {
-                needReflect = false;
-                var p = startPoint + (direction * 1920/100f);
-                linePoints.Add(p);
+                lc.LightShining(color,LineStrenth);
+                isMatch = lc.isMatch();
             }
-        } while (needReflect);
+
+            if (!isMatch){
+                ClearDirty(spIdx,gunIdx);
+                return;
+            }
+
+            Reflect re = obj.GetComponent<Reflect>();
+            if (re != null)
+            {
+                //利用Vector2的反射函数来计算反射方向
+                var inDirection = hit.point - (Vector2) startPoint;
+                direction = re.GetOutDirection(inDirection, hit.normal);
+                Debug.Log("inDirection=" + inDirection + ",direction.normalized=" + direction.normalized + ",direction=" + direction);
+                if (gunIdx >= _guns.Count){
+                    _guns.Add(ObjectPool.GetInstance().GetGun());
+                }
+                GameObject gun = _guns[gunIdx];
+                Gun g = gun.GetComponent<Gun>();
+                g.SetShotDir(direction);
+                gun.transform.parent = transform;
+                // gun.transform.position = hit.point + direction * 0.01f;
+                gun.transform.position = hit.point + direction * 0.001f;
+                gunIdx++;
+            }
+            
+            ActiveObject ao = obj.GetComponent<ActiveObject>();
+            if (ao != null)
+            {
+                Debug.Log("Exec LightShining");
+                ao.LightShining(lineRenderer);
+            }
+            
+            Diliver di = obj.GetComponent<Diliver>();
+            if (di != null)
+            {
+                Debug.Log("Exec Diliver LightShining");
+                di.LightShining(lineRenderer);
+            }
+
+            ThroughPass th = obj.GetComponent<ThroughPass>();
+            if (th != null)
+            {
+                Debug.Log("Exec ThroughPass LightShining");
+                th.LightShining(lineRenderer,hit.point,linePoints[linePoints.Count-1]-linePoints[linePoints.Count-2],color,LineStrenth);
+            }
+
+            Collections co = obj.GetComponent<Collections>();
+            if (co != null)
+            {
+                Debug.Log("Exec Collections LightShining");
+                co.LightShining();
+            }
+
+            FrameAni fa = obj.GetComponent<FrameAni>();
+            if (fa != null)
+            {
+                Debug.Log("Exec FrameAni LightShining");
+                fa.LightShining();
+            }
+        }
+        else
+        {
+            var p = startPoint + (direction * 1920/100f);
+            linePoints.Add(p);
+        }
+        ClearDirty(spIdx,gunIdx);
+        // } while (needReflect);
     }
 
     // Update is called once per frame

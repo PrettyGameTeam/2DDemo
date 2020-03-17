@@ -42,6 +42,8 @@ public class ThroughPass : MonoBehaviour
         }
     }
 
+    // public Vector2 GetOut
+
     public void LightShining(LineRenderer line,Vector2 hitPoint,Vector2 dir, int color, int strength)
     {
         if (lastShiningTime == 0f)
@@ -72,7 +74,7 @@ public class ThroughPass : MonoBehaviour
                 hit = Physics2D.Raycast(start, -dir);
                 if (hit.collider != null)
                 {
-                    Out.transform.position = hit.point + 0.01f * dir;
+                    Out.transform.position = hit.point + 0.01f * dir.normalized;
                     var gun = Out.GetComponent<Gun>();
                     if (gun != null)
                     {

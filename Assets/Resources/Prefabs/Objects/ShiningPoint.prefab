@@ -94,7 +94,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LightShape: 1
-  P1: 100
+  P1: 280
   FixedAlpha: 1
   P2: 0
   AttenuationStartAlpha: 1

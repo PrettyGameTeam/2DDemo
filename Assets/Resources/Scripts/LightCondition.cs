@@ -30,7 +30,7 @@ public class LightCondition : MonoBehaviour
 
     public void LightShining(int color, int lightStrength)
     {
-        if (Color == color && lightStrength >= LightStrength){
+        if ((Color == 0 || Color == color) && lightStrength >= LightStrength){
             if (lastShiningTime == 0f)
             {
                 lastShiningTime += Time.deltaTime * 2f;

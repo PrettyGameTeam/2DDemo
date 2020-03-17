@@ -74,6 +74,7 @@ public class DBManager
             Debug.Log("ReadUserData null");
             return null;
         }
+        Debug.Log("ReadUserData path=" + path);
         JsonReader js = new JsonReader(new StreamReader(path));
         //第二步：将json文本转换成对象
         JsonData jd = JsonMapper.ToObject(js);
