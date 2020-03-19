@@ -10,6 +10,7 @@ public class EventTypeName
     public const string NextChapterClick = "nextChapterClick";    //点击下一章
     public const string PreChapterClick = "preChapterClick";    //点击上一章
 
+    public const string LoadStage = "loadStage";    //加载关卡
     
     public const string PlayStage = "playStage";    //开始关卡
     public const string DebugOneKeyClick = "DebugOneKeyClick";    //点击一键通关
@@ -17,6 +18,8 @@ public class EventTypeName
     public const string StarShining = "StarShining";    //星星被照射
 
     public const string StarOutShining = "StarOutShining";    //星星脱离照射
+
+
     
     
 }

@@ -68,13 +68,14 @@ public class Mask : MonoBehaviour
     void Update()
     {
         var LightingObjects = GameObject.FindGameObjectsWithTag("Lighting");
+        Debug.Log("Mask Update LightingObjects.Count=" + LightingObjects.Length);
         List<Vector4> pointLights = new List<Vector4>();
         
         int pointCount = 0;
         List<Vector4> lineLights = new List<Vector4>();
         
         int lineCount = 0;
-        Debug.Log("Screen.width=" + Screen.width + ",Screen.height=" + Screen.height);
+        // Debug.Log("Screen.width=" + Screen.width + ",Screen.height=" + Screen.height);
         var asW = Screen.width / 1080f;
         var asH = Screen.height / 1920f;
         foreach (var obj in LightingObjects)
@@ -83,17 +84,23 @@ public class Mask : MonoBehaviour
             Shining sh = obj.gameObject.GetComponent<Shining>();
             if (sh.LightShape == 1 && sh.P1 > 0)
             {
+                Debug.Log("Lighting if Object Name=" + obj.name);
                 pointLights.Add(sh.GetPointLightInfo());
                 pointCount++;
             } 
             else if (sh.LightShape == 2 && sh.P1 > 0)
             {
-                Debug.Log("Lighting Object Name=" + obj.name);
+                Debug.Log("Lighting else if Object Name=" + obj.name);
                 foreach (var e in sh.GetLineLightList())
                 {
+                    // Debug.Log("Lighting Object Name=" + obj.name + ",e=" + e);
                     lineLights.Add(e);
                     lineCount++;
                 }   
+            }
+            else 
+            {
+                Debug.Log("Lighting else Object Name=" + obj.name);
             }
         }
         for (int i = pointCount; i < 20; i++)
@@ -112,6 +119,7 @@ public class Mask : MonoBehaviour
         spriteRenderer.material.SetFloat("_LineLightingArrLen",lineCount);
         if (lineLights.Count > 0)
         {
+            Debug.Log("Lighting lineLights.Count=" + lineLights.Count + ",lineCount=" + lineCount);
             spriteRenderer.material.SetVectorArray("_LineLightingArr",lineLights);
             
         }

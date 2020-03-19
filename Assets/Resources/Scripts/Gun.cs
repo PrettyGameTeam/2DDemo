@@ -49,13 +49,24 @@ public class Gun : MonoBehaviour
         transform.eulerAngles = new Vector3(transform.eulerAngles.x,transform.eulerAngles.y,transform.eulerAngles.z + initAngle);
         lineRenderer.transform.parent = gameObject.transform;
         SetLightInfo(color,LineStrenth);
+
+        ObjectEventDispatcher.dispatcher.addEventListener (EventTypeName.LoadStage, OnNewStageLoad);
+    }
+
+    private void OnNewStageLoad(UEvent evt){
+        //销毁自身存放的gun和point
+        ClearDirty(0,0);
+
+    }
+
+    void OnDestroy(){
+        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.LoadStage, OnNewStageLoad);
     }
 
     //改变光线颜色
     public void SetLightInfo(int cl,int strenth)
     {
         string path = "Materials/LightRed";
-        Debug.LogWarning("Gun [" + gameObject.name + "] start color = " + cl);
         if (cl == 1)    //红光
         {
             path = "Materials/LightRed";
@@ -73,13 +84,16 @@ public class Gun : MonoBehaviour
             path = path + "2";
         }
 
+        Debug.LogWarning("Gun [" + gameObject.name + "] start color = " + cl + ",strenth=" + strenth + ",path=" + path);
+
         var ma = Resources.Load<Material>(path); 
-        lineRenderer.material = ma;
-        // Material[] ms = new Material[strenth];
+        Material[] ms = new Material[1];
+        ms[0] = ma;
+        // lineRenderer.materials = new Material[1];
         // for (int i = 0; i < strenth; i++){
         //     ms[i] = Resources.Load<Material>(path);
         // }
-        // lineRenderer.materials = ms;
+        lineRenderer.materials = ms;
     }
 
     public void SetDiliver(GameObject obj)
@@ -103,14 +117,14 @@ public class Gun : MonoBehaviour
     }
 
     public void ClearDirty(int spIdx,int gunIdx){
-        Debug.Log("ClearDirty spIdx=" + spIdx + ",_shiningPoints.Count=" + _shiningPoints.Count + ",gunIdx=" + gunIdx + ",_guns.Count=" + _guns.Count);
+        Debug.LogWarning("[" + gameObject.name + "] ClearDirty spIdx=" + spIdx + ",_shiningPoints.Count=" + _shiningPoints.Count + ",gunIdx=" + gunIdx + ",_guns.Count=" + _guns.Count);
         if (spIdx < _shiningPoints.Count){
             for (int i = _shiningPoints.Count - 1; i >= spIdx; i--)
             {
                 var it = _shiningPoints[i];
+                it.transform.parent = null;
                 ObjectPool.GetInstance().PutShiningPoint(it);
                 _shiningPoints.RemoveAt(i);
-                it.transform.parent = null;
             }
         }
 
@@ -118,15 +132,16 @@ public class Gun : MonoBehaviour
             for (int i = _guns.Count - 1; i >= gunIdx; i--)
             {
                 var gu = _guns[i];
+                gu.transform.parent = null;
                 ObjectPool.GetInstance().PutGun(gu);
                 _guns.RemoveAt(i);
-                gu.transform.parent = null;
             }
         }
     }
 
     void CastLight()
     {
+        Debug.LogWarning("CastLight 1");
         int spIdx = 0; 
         int gunIdx = 0; 
         linePoints.Clear();
@@ -144,18 +159,22 @@ public class Gun : MonoBehaviour
         RaycastHit2D hit = new RaycastHit2D();
         // do
         // {
+        Debug.LogWarning("CastLight 2");
         hit = Physics2D.Raycast(startPoint, direction);
         if (hit.collider != null)
         {
             linePoints.Add(hit.point);
             //添加击中点闪光
             if (spIdx >= _shiningPoints.Count){
-                _shiningPoints.Add(ObjectPool.GetInstance().GetShiningPoint());
+                var ogg = ObjectPool.GetInstance().GetShiningPoint();
+                _shiningPoints.Add(ogg);
+                
             }
             GameObject gObj = _shiningPoints[spIdx];
-            gObj.transform.parent = transform;
+            // gObj.transform.parent = transform;
             gObj.transform.position = hit.point; 
             spIdx++;
+            Debug.LogWarning("CastLight 3");
             
             var obj = hit.collider.gameObject;
             LightCondition lc = obj.GetComponent<LightCondition>();
@@ -170,6 +189,7 @@ public class Gun : MonoBehaviour
                 ClearDirty(spIdx,gunIdx);
                 return;
             }
+            Debug.LogWarning("CastLight 4");
 
             Reflect re = obj.GetComponent<Reflect>();
             if (re != null)
@@ -177,23 +197,67 @@ public class Gun : MonoBehaviour
                 //利用Vector2的反射函数来计算反射方向
                 var inDirection = hit.point - (Vector2) startPoint;
                 direction = re.GetOutDirection(inDirection, hit.normal);
-                Debug.Log("inDirection=" + inDirection + ",direction.normalized=" + direction.normalized + ",direction=" + direction);
+                if (gunIdx >= _guns.Count){
+                    var gg = ObjectPool.GetInstance().GetGun();
+                    _guns.Add(gg);
+                }
+                GameObject gun = _guns[gunIdx];
+                Gun g = gun.GetComponent<Gun>();
+                g.SetShotDir(direction);
+                // gun.transform.parent = transform;
+                // gun.transform.position = hit.point + direction * 0.01f;
+                gun.transform.position = hit.point + direction * 0.01f;
+                Debug.LogWarning("Reflect hit.point=" + hit.point + ",gun position=" + gun.transform.position);
+                gunIdx++;
+            }
+            Debug.LogWarning("CastLight 5");
+
+            ThroughPass th = obj.GetComponent<ThroughPass>();
+            if (th != null)
+            {
+                // Debug.Log("Exec ThroughPass LightShining");
+                var inDirection = hit.point - (Vector2) startPoint;
+                Vector2 hitP = th.GetOutPosition(hit.point,inDirection);
                 if (gunIdx >= _guns.Count){
                     _guns.Add(ObjectPool.GetInstance().GetGun());
                 }
                 GameObject gun = _guns[gunIdx];
                 Gun g = gun.GetComponent<Gun>();
-                g.SetShotDir(direction);
-                gun.transform.parent = transform;
+                if (th.UseOriginLight){
+                    g.color = color;
+                    g.LineStrenth = LineStrenth;
+                    // g.ResetLight();
+                }
+                else 
+                {
+                    var c = th.OutColor;
+                    if (th.OutColor == 0){ 
+                        c = color;
+                    }
+
+                    var l = th.OutLineStrength;
+                    if (th.OutLineStrength == 0){
+                        l = LineStrenth;
+                    }
+                    g.color = c;
+                    g.LineStrenth = l;
+                    // g.ResetLight();
+                }
+                g.SetShotDir(inDirection);
+                g.SetLightInfo(g.color,g.LineStrenth);
+                // gun.transform.parent = transform;
                 // gun.transform.position = hit.point + direction * 0.01f;
-                gun.transform.position = hit.point + direction * 0.001f;
+                gun.transform.position = hitP;
+                Debug.LogWarning("Through[" + th.gameObject.name + "] hit.point=" + hit.point + ",gun position=" + gun.transform.position);
                 gunIdx++;
+                // th.LightShining(lineRenderer,hit.point,linePoints[linePoints.Count-1]-linePoints[linePoints.Count-2],color,LineStrenth);
             }
+            Debug.LogWarning("CastLight 6");
             
             ActiveObject ao = obj.GetComponent<ActiveObject>();
             if (ao != null)
             {
-                Debug.Log("Exec LightShining");
+                // Debug.Log("Exec LightShining");
                 ao.LightShining(lineRenderer);
             }
             
@@ -202,13 +266,6 @@ public class Gun : MonoBehaviour
             {
                 Debug.Log("Exec Diliver LightShining");
                 di.LightShining(lineRenderer);
-            }
-
-            ThroughPass th = obj.GetComponent<ThroughPass>();
-            if (th != null)
-            {
-                Debug.Log("Exec ThroughPass LightShining");
-                th.LightShining(lineRenderer,hit.point,linePoints[linePoints.Count-1]-linePoints[linePoints.Count-2],color,LineStrenth);
             }
 
             Collections co = obj.GetComponent<Collections>();
@@ -221,7 +278,7 @@ public class Gun : MonoBehaviour
             FrameAni fa = obj.GetComponent<FrameAni>();
             if (fa != null)
             {
-                Debug.Log("Exec FrameAni LightShining");
+                Debug.LogWarning("Exec FrameAni LightShining");
                 fa.LightShining();
             }
         }

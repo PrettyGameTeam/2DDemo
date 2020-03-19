@@ -20,13 +20,17 @@ public class ObjectPool
     {
         for (int i = 0; i < shiningCount; i++)
         {
-            PutShiningPoint((GameObject)Object.Instantiate(Resources.Load("Prefabs/Objects/ShiningPoint")));
+            var ob = (GameObject)Object.Instantiate(Resources.Load("Prefabs/Objects/ShiningPoint"));
+            Object.DontDestroyOnLoad(ob);
+            PutShiningPoint(ob);
             // _shiningPoints.Push();
         }
 
         for (int i = 0; i < gunCount; i++)
         {
-            PutGun((GameObject)Object.Instantiate(Resources.Load("Prefabs/Objects/Gun")));
+            var ob = (GameObject)Object.Instantiate(Resources.Load("Prefabs/Objects/Gun"));
+            Object.DontDestroyOnLoad(ob);
+            PutGun(ob);
             // _guns.Push();
         }
     }
@@ -42,8 +46,9 @@ public class ObjectPool
         if (_guns.Count == 0){
             for (int i = 0; i < 5; i++)
             {
-                PutGun((GameObject)Object.Instantiate(Resources.Load("Prefabs/Objects/Gun")));
-                // _guns.Push((GameObject)Object.Instantiate(Resources.Load("Prefabs/Objects/Gun")));
+                var ob = (GameObject)Object.Instantiate(Resources.Load("Prefabs/Objects/Gun"));
+                Object.DontDestroyOnLoad(ob);
+                PutGun(ob);
             }
         }
         GameObject gun = _guns.Pop();
@@ -52,6 +57,8 @@ public class ObjectPool
     }
 
     public void PutGun(GameObject gun){
+        Gun g = gun.GetComponent<Gun>();
+        g.ClearDirty(0,0);
         gun.SetActive(false);
         _guns.Push(gun);
     }
@@ -60,8 +67,9 @@ public class ObjectPool
         if (_shiningPoints.Count == 0){
             for (int i = 0; i < 10; i++)
             {
-                PutShiningPoint((GameObject)Object.Instantiate(Resources.Load("Prefabs/Objects/ShiningPoint")));
-                // _shiningPoints.Push((GameObject)Object.Instantiate(Resources.Load("Prefabs/Objects/ShiningPoint")));
+                var ob = (GameObject)Object.Instantiate(Resources.Load("Prefabs/Objects/ShiningPoint"));
+                Object.DontDestroyOnLoad(ob);
+                PutShiningPoint(ob);
             }
         }
 

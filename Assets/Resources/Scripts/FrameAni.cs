@@ -49,7 +49,7 @@ public class FrameAni : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Update _lastShiningTime = " + _lastShiningTime + ",_totalPlayTime=" + _totalPlayTime + ",_direction=" + _direction);
+        // Debug.Log("Update _lastShiningTime = " + _lastShiningTime + ",_totalPlayTime=" + _totalPlayTime + ",_direction=" + _direction);
         if (_lightControl){
             _lastShiningTime -= Time.deltaTime;
             if (_lastShiningTime <= 0)
@@ -64,7 +64,7 @@ public class FrameAni : MonoBehaviour
         
         //正在播放中
         if (_status == 1){
-            Debug.Log("Update status=" + _status + ",direction=" + _direction + ",totalPlayTime=" + _totalPlayTime);
+            // Debug.Log("Update status=" + _status + ",direction=" + _direction + ",totalPlayTime=" + _totalPlayTime);
             //正向播放到底
             if (_index == Frames.Length - 1 && _direction == 1){
                 //非循环播放

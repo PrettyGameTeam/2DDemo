@@ -188,6 +188,7 @@ using UnityEngine;
 
         if (stage != null)
         {
+            ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LoadStage),null);
             ResetSceneControl();
             DestroyImmediate(stage.gameObject);
             // Destroy(stage.gameObject);
