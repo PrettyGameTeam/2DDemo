@@ -198,6 +198,7 @@ using UnityEngine;
         // stage = (GameObject)Instantiate(Resources.Load("Prefabs/Stage/Stage"));
         stage = (GameObject)Instantiate(Resources.Load("Prefabs/Stage/" + stageName));
         mask = (GameObject)Instantiate(Resources.Load("Prefabs/Objects/Mask"));
+        AudioManager.GetInstance().PlayNewAudio("Audio/Stage/" + _stage.Chapter.ChapterAudio);
     }
 
 }

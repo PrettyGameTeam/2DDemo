@@ -12,7 +12,7 @@ public class ConfigManager
     
     private ConfigManager()
     {
-        
+
     }
 
     public static ConfigManager GetInstance()
@@ -149,6 +149,10 @@ public class ConfigManager
         return chapters[chapters.Count - 1];
     }
 
-
-
+    public string GetSystemParamByKey(string key){
+        if (key == "StageChooseSound"){
+            return "Audio/Stage/Chapter_1";
+        }
+        return null;
+    }
 }

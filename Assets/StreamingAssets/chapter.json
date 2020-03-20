@@ -1,7 +1,7 @@
 [
   {"ChapterId":"1 ","ChapterTitle":"ChapterTitle1","Order":"1 ","NextChapterId":"2 ","ChapterBg":"ChapterBg1","ChapterAudio":"Chapter_1"},
-  {"ChapterId":"2 ","ChapterTitle":"ChapterTitle2","Order":"2 ","NextChapterId":"3 ","ChapterBg":"ChapterBg2","ChapterAudio":"Chapter_1"},
-  {"ChapterId":"3 ","ChapterTitle":"ChapterTitle3","Order":"3 ","NextChapterId":"4 ","ChapterBg":"ChapterBg3","ChapterAudio":"Chapter_1"},
-  {"ChapterId":"4 ","ChapterTitle":"ChapterTitle4","Order":"4 ","NextChapterId":"5 ","ChapterBg":"ChapterBg4","ChapterAudio":"Chapter_1"},
-  {"ChapterId":"5 ","ChapterTitle":"ChapterTitle5","Order":"5 ","NextChapterId":"0 ","ChapterBg":"ChapterBg5","ChapterAudio":"Chapter_1"}
+  {"ChapterId":"2 ","ChapterTitle":"ChapterTitle2","Order":"2 ","NextChapterId":"3 ","ChapterBg":"ChapterBg2","ChapterAudio":"Chapter_2"},
+  {"ChapterId":"3 ","ChapterTitle":"ChapterTitle3","Order":"3 ","NextChapterId":"4 ","ChapterBg":"ChapterBg3","ChapterAudio":"Chapter_3"},
+  {"ChapterId":"4 ","ChapterTitle":"ChapterTitle4","Order":"4 ","NextChapterId":"5 ","ChapterBg":"ChapterBg4","ChapterAudio":"Chapter_4"},
+  {"ChapterId":"5 ","ChapterTitle":"ChapterTitle5","Order":"5 ","NextChapterId":"0 ","ChapterBg":"ChapterBg5","ChapterAudio":"Chapter_5"}
   ]
