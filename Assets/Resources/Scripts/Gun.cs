@@ -253,6 +253,45 @@ public class Gun : MonoBehaviour
                 // th.LightShining(lineRenderer,hit.point,linePoints[linePoints.Count-1]-linePoints[linePoints.Count-2],color,LineStrenth);
             }
             Debug.LogWarning("CastLight 6");
+
+            Refraction refr = obj.GetComponent<Refraction>();
+            if (refr != null){
+                var inDirection = hit.point - (Vector2) startPoint;
+                Vector2 outDir = refr.GetOutDir(inDirection);
+                Vector2 hitP = refr.GetOutPosition(outDir);
+                if (gunIdx >= _guns.Count){
+                    _guns.Add(ObjectPool.GetInstance().GetGun());
+                }
+                GameObject gun = _guns[gunIdx];
+                Gun g = gun.GetComponent<Gun>();
+                if (refr.UseOriginLight){
+                    g.color = color;
+                    g.LineStrenth = LineStrenth;
+                }
+                else 
+                {
+                    var c = refr.OutColor;
+                    if (refr.OutColor == 0){ 
+                        c = color;
+                    }
+
+                    var l = refr.OutLineStrength;
+                    if (refr.OutLineStrength == 0){
+                        l = LineStrenth;
+                    }
+                    g.color = c;
+                    g.LineStrenth = l;
+                    // g.ResetLight();
+                }
+                g.SetShotDir(outDir);
+                g.SetLightInfo(g.color,g.LineStrenth);
+                // gun.transform.parent = transform;
+                // gun.transform.position = hit.point + direction * 0.01f;
+                gun.transform.position = hitP;
+                Debug.LogWarning("Refraction[" + refr.gameObject.name + "] hit.point=" + hit.point + ",gun position=" + gun.transform.position);
+                gunIdx++;
+            }
+
             
             ActiveObject ao = obj.GetComponent<ActiveObject>();
             if (ao != null)
