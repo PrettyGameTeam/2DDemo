@@ -42,7 +42,7 @@ using UnityEngine;
         canvas = GameObject.Find("Canvas");
         _stage = ConfigManager.GetInstance().GetStage(UserDataManager.GetInstance().GetUserData().CurrentStage);
         //加载关卡
-        loadStage(_stage.PrefabName);
+        loadStage();
         //加载菜单面板
         _victoryPanel = (GameObject)Instantiate(Resources.Load("Prefabs/UI/VictoryPanel"));
         _victoryPanel.transform.SetParent(canvas.transform);
@@ -146,7 +146,7 @@ using UnityEngine;
     private void OnRetryClick(UEvent evt)
     {
         Debug.Log("OnRetryClick");
-        loadStage(_stage.PrefabName);
+        loadStage();
         _victoryPanel.SetActive(false);
     }
     
@@ -158,7 +158,7 @@ using UnityEngine;
             return;
         }
         _stage = _stage.NextStage;
-        loadStage(_stage.PrefabName);
+        loadStage();
         UserData userData = UserDataManager.GetInstance().GetUserData();
         userData.CurrentStage = _stage.StageId;
         _victoryPanel.SetActive(false);
@@ -174,13 +174,14 @@ using UnityEngine;
             choose.SetActive(false);
             currentCheckObj = null;
         }
+        _star = 0;
     }
     
 
     //加载关卡prefab
-    public void loadStage(string stageName)
+    public void loadStage()
     {
-        
+        var stageName = _stage.PrefabName;
         if (stageName == null)
         {
             stageName = "Stage";   
@@ -199,6 +200,9 @@ using UnityEngine;
         stage = (GameObject)Instantiate(Resources.Load("Prefabs/Stage/" + stageName));
         mask = (GameObject)Instantiate(Resources.Load("Prefabs/Objects/Mask"));
         AudioManager.GetInstance().PlayNewAudio("Audio/Stage/" + _stage.Chapter.ChapterAudio);
+        UserData userData = UserDataManager.GetInstance().GetUserData();
+        UserStage userStage = userData.GetUserStage(_stage.StageId);
+        _star = userStage.Star;
     }
 
 }

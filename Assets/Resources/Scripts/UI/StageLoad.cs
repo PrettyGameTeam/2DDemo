@@ -27,6 +27,6 @@ public class StageLoad : MonoBehaviour
         }
         GameObject obj = GameObject.Find("SceneControl");
         SceneControl sc = obj.GetComponent<SceneControl>();
-        sc.loadStage(input.text.Trim(' '));
+        // sc.loadStage(input.text.Trim(' '));
     }
 }

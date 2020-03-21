@@ -94,7 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9be2a6e9676f09344ba665250d2b4d8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DeltaPerFrame: 0.033
+  DeltaPerFrame: 0.1
   Frames:
   - {fileID: 21300000, guid: 2502fe5552f10954b8b637f766c5de11, type: 3}
   - {fileID: 21300000, guid: bd8a1cda0bf83ee48b84558fae2f3850, type: 3}
@@ -112,20 +112,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: a370c87eabe766a41bfef7aa35955172, type: 3}
   - {fileID: 21300000, guid: 9db237fdc490ea54f8695c9c33001fd6, type: 3}
   - {fileID: 21300000, guid: d791cc2d39a1bdf4b85e8c8cff7ca208, type: 3}
-  - {fileID: 21300000, guid: d199b296b0a6a684d9c14c0e881738e6, type: 3}
-  - {fileID: 21300000, guid: a36b7ad83a8ef204ab1c0864d3fe2921, type: 3}
-  - {fileID: 21300000, guid: 75cad494ad45d0f439ac80f5518a474a, type: 3}
-  - {fileID: 21300000, guid: 294cccfd2b85d8b4a9944f3b7f11edea, type: 3}
-  - {fileID: 21300000, guid: f0f733a58ad21ad4d9426c0baebb2c1b, type: 3}
-  - {fileID: 21300000, guid: 3420eda7bf97f7d4fb3dbcdb3d90fd22, type: 3}
-  - {fileID: 21300000, guid: 2ab7ba18e48c4bd468eb5f48ad21a4a5, type: 3}
-  - {fileID: 21300000, guid: 3fb39cee281e1ee46aab99b9eeaa6de7, type: 3}
-  - {fileID: 21300000, guid: 91fefc69ff1919045b859661efa6c8cf, type: 3}
-  - {fileID: 21300000, guid: 2b36d42301821f7488178917ea6995cd, type: 3}
-  - {fileID: 21300000, guid: 1d81170567539824d93d243b167a97a2, type: 3}
-  - {fileID: 21300000, guid: dbc2d243336f2eb49aa37e8df8248ce4, type: 3}
-  - {fileID: 21300000, guid: 0300bcf4335928f4d9dbe4d811501da5, type: 3}
-  - {fileID: 21300000, guid: c1e66c8cf67689a459828aaf70370ec4, type: 3}
   AutoPlay: 1
   CallbackTime: 0
   Repeat: 0
@@ -304,7 +290,7 @@ SpriteRenderer:
   m_SortingLayerID: 608999393
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 0ffb3b89694de3740b31af6ceb6f0344, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d791cc2d39a1bdf4b85e8c8cff7ca208, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -351,7 +337,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.72, y: 2.33}
+    oldSize: {x: 3.33, y: 3.67}
     newSize: {x: 1.72, y: 2.33}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -433,6 +419,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecbbde99654d81544b662ca2b40cc018, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Frames:
+  - {fileID: 21300000, guid: d199b296b0a6a684d9c14c0e881738e6, type: 3}
+  - {fileID: 21300000, guid: a36b7ad83a8ef204ab1c0864d3fe2921, type: 3}
+  - {fileID: 21300000, guid: 75cad494ad45d0f439ac80f5518a474a, type: 3}
+  - {fileID: 21300000, guid: 294cccfd2b85d8b4a9944f3b7f11edea, type: 3}
+  - {fileID: 21300000, guid: f0f733a58ad21ad4d9426c0baebb2c1b, type: 3}
+  - {fileID: 21300000, guid: 3420eda7bf97f7d4fb3dbcdb3d90fd22, type: 3}
+  - {fileID: 21300000, guid: 2ab7ba18e48c4bd468eb5f48ad21a4a5, type: 3}
+  - {fileID: 21300000, guid: 3fb39cee281e1ee46aab99b9eeaa6de7, type: 3}
+  - {fileID: 21300000, guid: 91fefc69ff1919045b859661efa6c8cf, type: 3}
+  - {fileID: 21300000, guid: 2b36d42301821f7488178917ea6995cd, type: 3}
+  - {fileID: 21300000, guid: 1d81170567539824d93d243b167a97a2, type: 3}
+  - {fileID: 21300000, guid: dbc2d243336f2eb49aa37e8df8248ce4, type: 3}
+  - {fileID: 21300000, guid: 0300bcf4335928f4d9dbe4d811501da5, type: 3}
+  - {fileID: 21300000, guid: c1e66c8cf67689a459828aaf70370ec4, type: 3}
+  DeltaPerFrame: 0.1
 --- !u!1 &4021142300528930578
 GameObject:
   m_ObjectHideFlags: 0
@@ -562,7 +564,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9be2a6e9676f09344ba665250d2b4d8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DeltaPerFrame: 0.033
+  DeltaPerFrame: 0.1
   Frames:
   - {fileID: 21300000, guid: 2863a49d8771c114ab8a8c71f4e4b115, type: 3}
   - {fileID: 21300000, guid: 79c4debbb7cb9f44f801b3e8c098a0e0, type: 3}
