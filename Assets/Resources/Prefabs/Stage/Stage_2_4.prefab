@@ -913,6 +913,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecbbde99654d81544b662ca2b40cc018, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Frames: []
+  DeltaPerFrame: 0.1
 --- !u!1 &8681584398444623267
 GameObject:
   m_ObjectHideFlags: 0
@@ -5024,6 +5026,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7262840957605504389, guid: 913f409fb20ff434a971144fc70853bb,
+        type: 3}
+      propertyPath: LightStrength
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 913f409fb20ff434a971144fc70853bb, type: 3}
