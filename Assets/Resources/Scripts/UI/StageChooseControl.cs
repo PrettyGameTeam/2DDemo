@@ -8,6 +8,10 @@ public class StageChooseControl : MonoBehaviour
 {
     private StageNode[] _stageNodes;
     private Chapter _chapter;
+
+    // public AudioClip BgAudio;
+
+    // private AudioSource audio = null;
     
     // Start is called before the first frame update
     void Start()
@@ -21,6 +25,9 @@ public class StageChooseControl : MonoBehaviour
         }
         var userData = UserDataManager.GetInstance().GetUserData();
         LoadChapter(userData.Chapters[userData.Chapters.Count - 1]);
+        // audio = GetComponent<AudioSource>();
+        // audio.clip = BgAudio;
+        // audio.Play();
     }
 
     // Update is called once per frame
@@ -38,6 +45,7 @@ public class StageChooseControl : MonoBehaviour
         ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.DebugOneKeyClick,OnOneKey);
         ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.NextChapterClick,OnNextChapterClick);
         ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.PreChapterClick,OnPreChapterClick);
+        AudioManager.GetInstance().PlayNewAudio(ConfigManager.GetInstance().GetSystemParamByKey("StageChooseSound"));
     }
 
     public void LoadChapter(UserChapter userChapter)

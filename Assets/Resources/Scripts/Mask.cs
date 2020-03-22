@@ -5,8 +5,12 @@ using UnityEngine;
 public class Mask : MonoBehaviour
 {
     public Shader MaskShader;
+
+    // public Texture2D MaskTex;
     
     private SpriteRenderer spriteRenderer;
+
+    private int _status = 0;
     
     public Material GetMaterial
     {
@@ -30,18 +34,27 @@ public class Mask : MonoBehaviour
         // RenderTexture currentRT = RenderTexture.active;
         // RenderTexture renderTexture = RenderTexture.GetTemporary(MaskTex.width, MaskTex.height, 32);
         // Graphics.Blit(MaskTex,renderTexture);
-        //
+        
         // RenderTexture.active = renderTexture;
         // spTex.ReadPixels(new Rect(0,0,renderTexture.width,renderTexture.height),0,0 );
         // spTex.Apply();
-        //
+        
         // RenderTexture.active = currentRT;
         // RenderTexture.ReleaseTemporary(renderTexture);
-        //
-        // _maskWidth = spTex.width;
-        // _maskHeight = spTex.height;
         // var sp = Sprite.Create(spTex,new Rect(0.0f, 0.0f, spTex.width, spTex.height), new Vector2(0.5f,0.5f));
         // spriteRenderer.sprite = sp;
+    }
+
+    private void OnVictory(UEvent evt){
+        Debug.Log(" Mask OnVictory ");
+        if (_status == 0){
+            _status = 1;
+        }
+    }
+
+    private void Awake() {
+        Debug.Log(" Mask awake ");
+        ObjectEventDispatcher.dispatcher.addEventListener (EventTypeName.Victory, OnVictory);
     }
 
     public void ReloadMaterial()
@@ -64,9 +77,27 @@ public class Mask : MonoBehaviour
         spriteRenderer.material.SetVectorArray("_LineLightingArr",lineLights);
     }
 
+    private void OnDestroy() {
+        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.Victory, OnVictory);
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (_status == 1){
+            
+            Debug.Log("spriteRenderer.color=" + spriteRenderer.color);
+            if (spriteRenderer.color.a <= 0){
+                _status = 2;
+            }
+            else {
+                var c = spriteRenderer.color;
+                c.a = c.a - 0.5f * Time.deltaTime;
+                c.a = c.a < 0 ? 0 : c.a;
+                spriteRenderer.color = c;
+            }
+        }
+
         var LightingObjects = GameObject.FindGameObjectsWithTag("Lighting");
         Debug.Log("Mask Update LightingObjects.Count=" + LightingObjects.Length);
         List<Vector4> pointLights = new List<Vector4>();
@@ -112,7 +143,7 @@ public class Mask : MonoBehaviour
         {
             lineLights.Add(new Vector4());
         }
-        spriteRenderer.material.SetFloat("_Alpha",0.5f);
+        spriteRenderer.material.SetFloat("_Alpha",spriteRenderer.color.a);
         
         spriteRenderer.material.SetVectorArray("_LightingArr",pointLights);
         spriteRenderer.material.SetFloat("_LightingArrLen",pointCount);
