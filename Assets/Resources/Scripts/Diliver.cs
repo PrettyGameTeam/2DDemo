@@ -44,6 +44,7 @@ public class Diliver : MonoBehaviour
                         gun.SetDirty();
                         gun.ResetLight();                
                         Out.SetActive(false);
+                        gun.ClearDirty(0,0);
                     }
                 }
                 

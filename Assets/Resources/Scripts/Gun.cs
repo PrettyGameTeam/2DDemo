@@ -117,7 +117,7 @@ public class Gun : MonoBehaviour
     }
 
     public void ClearDirty(int spIdx,int gunIdx){
-        Debug.LogWarning("[" + gameObject.name + "] ClearDirty spIdx=" + spIdx + ",_shiningPoints.Count=" + _shiningPoints.Count + ",gunIdx=" + gunIdx + ",_guns.Count=" + _guns.Count);
+        // Debug.LogWarning("[" + gameObject.name + "] ClearDirty spIdx=" + spIdx + ",_shiningPoints.Count=" + _shiningPoints.Count + ",gunIdx=" + gunIdx + ",_guns.Count=" + _guns.Count);
         if (spIdx < _shiningPoints.Count){
             for (int i = _shiningPoints.Count - 1; i >= spIdx; i--)
             {
@@ -141,7 +141,7 @@ public class Gun : MonoBehaviour
 
     void CastLight()
     {
-        Debug.LogWarning("CastLight 1");
+        // Debug.LogWarning("CastLight 1");
         int spIdx = 0; 
         int gunIdx = 0; 
         linePoints.Clear();
@@ -159,7 +159,7 @@ public class Gun : MonoBehaviour
         RaycastHit2D hit = new RaycastHit2D();
         // do
         // {
-        Debug.LogWarning("CastLight 2");
+        // Debug.LogWarning("CastLight 2");
         hit = Physics2D.Raycast(startPoint, direction);
         if (hit.collider != null)
         {
@@ -174,7 +174,7 @@ public class Gun : MonoBehaviour
             // gObj.transform.parent = transform;
             gObj.transform.position = hit.point; 
             spIdx++;
-            Debug.LogWarning("CastLight 3");
+            // Debug.LogWarning("CastLight 3
             
             var obj = hit.collider.gameObject;
             LightCondition lc = obj.GetComponent<LightCondition>();
@@ -189,7 +189,7 @@ public class Gun : MonoBehaviour
                 ClearDirty(spIdx,gunIdx);
                 return;
             }
-            Debug.LogWarning("CastLight 4");
+            // Debug.LogWarning("CastLight 4");
 
             Reflect re = obj.GetComponent<Reflect>();
             if (re != null)
@@ -207,10 +207,10 @@ public class Gun : MonoBehaviour
                 // gun.transform.parent = transform;
                 // gun.transform.position = hit.point + direction * 0.01f;
                 gun.transform.position = hit.point + direction * 0.01f;
-                Debug.LogWarning("Reflect hit.point=" + hit.point + ",gun position=" + gun.transform.position);
+                // Debug.LogWarning("Reflect hit.point=" + hit.point + ",gun position=" + gun.transform.position);
                 gunIdx++;
             }
-            Debug.LogWarning("CastLight 5");
+            // Debug.LogWarning("CastLight 5");
 
             ThroughPass th = obj.GetComponent<ThroughPass>();
             if (th != null)
@@ -248,11 +248,11 @@ public class Gun : MonoBehaviour
                 // gun.transform.parent = transform;
                 // gun.transform.position = hit.point + direction * 0.01f;
                 gun.transform.position = hitP;
-                Debug.LogWarning("Through[" + th.gameObject.name + "] hit.point=" + hit.point + ",gun position=" + gun.transform.position);
+                // Debug.LogWarning("Through[" + th.gameObject.name + "] hit.point=" + hit.point + ",gun position=" + gun.transform.position);
                 gunIdx++;
                 // th.LightShining(lineRenderer,hit.point,linePoints[linePoints.Count-1]-linePoints[linePoints.Count-2],color,LineStrenth);
             }
-            Debug.LogWarning("CastLight 6");
+            // Debug.LogWarning("CastLight 6");
 
             Refraction refr = obj.GetComponent<Refraction>();
             if (refr != null){
@@ -288,7 +288,7 @@ public class Gun : MonoBehaviour
                 // gun.transform.parent = transform;
                 // gun.transform.position = hit.point + direction * 0.01f;
                 gun.transform.position = hitP;
-                Debug.LogWarning("Refraction[" + refr.gameObject.name + "] hit.point=" + hit.point + ",gun position=" + gun.transform.position);
+                // Debug.LogWarning("Refraction[" + refr.gameObject.name + "] hit.point=" + hit.point + ",gun position=" + gun.transform.position);
                 gunIdx++;
             }
 
@@ -303,21 +303,21 @@ public class Gun : MonoBehaviour
             Diliver di = obj.GetComponent<Diliver>();
             if (di != null)
             {
-                Debug.Log("Exec Diliver LightShining");
+                // Debug.Log("Exec Diliver LightShining");
                 di.LightShining(lineRenderer);
             }
 
             Collections co = obj.GetComponent<Collections>();
             if (co != null)
             {
-                Debug.Log("Exec Collections LightShining");
+                // Debug.Log("Exec Collections LightShining");
                 co.LightShining();
             }
 
             FrameAni fa = obj.GetComponent<FrameAni>();
             if (fa != null)
             {
-                Debug.LogWarning("Exec FrameAni LightShining");
+                // Debug.LogWarning("Exec FrameAni LightShining");
                 fa.LightShining();
             }
         }

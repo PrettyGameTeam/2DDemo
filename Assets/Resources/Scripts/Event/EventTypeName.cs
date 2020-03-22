@@ -19,6 +19,20 @@ public class EventTypeName
 
     public const string StarOutShining = "StarOutShining";    //星星脱离照射
 
+    public const string PlayCurrentStage = "PlayCurrentStage";    //开始运行当前关卡
+
+    public const string ClickSetting = "ClickSetting";    //点击设置
+
+    public const string ClickShare = "ClickShare";    //点击分享
+
+    public const string ClickMemory = "ClickMemory";    //点击选关
+
+    public const string QQLogin = "QQLogin";    //QQ登录
+
+    public const string WechatLogin = "WechatLogin";    //WeChat登录
+
+    public const string BackToMain = "BackToMain";    //回到主界面
+
 
     
     

@@ -54,6 +54,7 @@ public class UserDataManager
         us.Star = 0;
         uc.Stages.Add(us);
         _userData.Chapters = chapters;
+        _userData.CurrentStage = s.StageId;
         DBManager.WriteUserData();
     }
 

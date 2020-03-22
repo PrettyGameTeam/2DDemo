@@ -6,28 +6,26 @@ using UnityEngine.SceneManagement;
 
 public class StageChooseControl : MonoBehaviour
 {
-    private StageNode[] _stageNodes;
-    private Chapter _chapter;
-
-    // public AudioClip BgAudio;
-
-    // private AudioSource audio = null;
-    
+    private GameObject _loginCanvas;
+    private GameObject _stageChooseCanvas;
     // Start is called before the first frame update
     void Start()
     {
-        //查找Bg
-        _stageNodes = new StageNode[25];
-        GameObject stageList = GameObject.Find("Canvas/StageList");
-        for (int i = 0; i < 25; i++)
+        Debug.Log("StageChooseControl Start");
+        _loginCanvas = (GameObject)Instantiate(Resources.Load("Prefabs/UI/LoginPanel"));
+        _loginCanvas.transform.parent = transform;
+        _stageChooseCanvas = (GameObject)Instantiate(Resources.Load("Prefabs/UI/StageChoose"));
+        _stageChooseCanvas.transform.parent = transform;
+        var pre = VariableManager.GetInstance().GetIntVariable("preLoginPrefab");
+        if (pre == 0){
+            _loginCanvas.SetActive(true);
+            _stageChooseCanvas.SetActive(false);
+        } 
+        else
         {
-            _stageNodes[i] = stageList.transform.Find("Stage" + i).gameObject.GetComponent<StageNode>();
+            _loginCanvas.SetActive(false);
+            _stageChooseCanvas.SetActive(true);
         }
-        var userData = UserDataManager.GetInstance().GetUserData();
-        LoadChapter(userData.Chapters[userData.Chapters.Count - 1]);
-        // audio = GetComponent<AudioSource>();
-        // audio.clip = BgAudio;
-        // audio.Play();
     }
 
     // Update is called once per frame
@@ -41,88 +39,34 @@ public class StageChooseControl : MonoBehaviour
         //加载策划配置
         ConfigManager.GetInstance().LoadConfig();
         UserDataManager.GetInstance().LoadUserData(); 
-        ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.PlayStage,OnPlayStage);
-        ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.DebugOneKeyClick,OnOneKey);
-        ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.NextChapterClick,OnNextChapterClick);
-        ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.PreChapterClick,OnPreChapterClick);
         AudioManager.GetInstance().PlayNewAudio(ConfigManager.GetInstance().GetSystemParamByKey("StageChooseSound"));
+        ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.ClickMemory,OnClickMemory);
+        ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.BackToMain,OnBackToMain);
+        // ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.PlayStage,OnPlayStage);
+        // ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.DebugOneKeyClick,OnOneKey);
+        // ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.NextChapterClick,OnNextChapterClick);
+        // ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.PreChapterClick,OnPreChapterClick);
+        // AudioManager.GetInstance().PlayNewAudio(ConfigManager.GetInstance().GetSystemParamByKey("StageChooseSound"));
     }
 
-    public void LoadChapter(UserChapter userChapter)
+    private void OnDestroy() {
+        Debug.Log("StageChooseControl OnDestroy");
+        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.ClickMemory,OnClickMemory);
+        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.BackToMain,OnBackToMain);
+    }
+
+    private void OnClickMemory(UEvent evt){
+        _loginCanvas.SetActive(false);
+        _stageChooseCanvas.SetActive(true);
+        VariableManager.GetInstance().SetIntVariable("preLoginPrefab",1);
+    }
+
+    
+    private void OnBackToMain(UEvent evt)
     {
-        //加载标题
-        ChapterNode cn = GameObject.Find("Canvas/Bg").GetComponent<ChapterNode>();
-        ConfigManager cm = ConfigManager.GetInstance();
-        _chapter = cm.GetChapter(userChapter.ChapterId);
-        cn.LoadData(_chapter,userChapter);
-
-        Chapter chapter = ConfigManager.GetInstance().GetChapter(userChapter.ChapterId);
-        //加载关卡按钮
-        for (int i = 0; i < _stageNodes.Length; i++)
-        {
-            if (i >= chapter.Stages.Count)
-            {
-                _stageNodes[i].LoadData(null,null);
-            }
-            else if (i >= userChapter.Stages.Count)
-            {
-                _stageNodes[i].LoadData(ConfigManager.GetInstance().GetStage(chapter.Stages[i].StageId),null);
-            }
-            else
-            {
-                Debug.Log("chapter.Stages[i].StageId=" + chapter.Stages[i].StageId);
-                Debug.Log("userChapter.Stages[i]=" + userChapter.Stages[i]);
-                _stageNodes[i].LoadData(ConfigManager.GetInstance().GetStage(chapter.Stages[i].StageId),userChapter.Stages[i]);
-            }
-        }
+        _loginCanvas.SetActive(true);
+        _stageChooseCanvas.SetActive(false);
+        VariableManager.GetInstance().SetIntVariable("preLoginPrefab",0);
     }
 
-    private void OnPlayStage(UEvent evt)
-    {
-        Debug.Log("OnPlayStage");
-        //查找到点击的关卡
-        UserDataManager.GetInstance().GetUserData().CurrentStage = (int) evt.eventParams;
-        
-        // s.PrefabName  
-        SceneManager.LoadScene("Stage", LoadSceneMode.Single);
-    }
-
-    private void OnOneKey(UEvent evt)
-    {
-        Debug.Log("OnOneKey");
-        //查找到点击的关卡
-        UserDataManager.GetInstance().OneKeyOpen();
-        UserChapter uc = UserDataManager.GetInstance().GetUserData().GetUserChapter(_chapter.ChapterId);
-        LoadChapter(uc);
-    }
-
-    private void OnNextChapterClick(UEvent evt)
-    {
-        Debug.Log("OnNextChapterClick");
-        //查找到点击的关卡
-        if (_chapter.NextChapter == null){
-            return;
-        }
-        UserChapter uc = UserDataManager.GetInstance().GetUserData().GetUserChapter(_chapter.NextChapter.ChapterId);
-        if (uc == null){
-            return;
-        }
-        _chapter = _chapter.NextChapter;
-        LoadChapter(uc);
-    }
-
-    private void OnPreChapterClick(UEvent evt)
-    {
-        Debug.Log("OnNextChapterClick");
-        //查找到点击的关卡
-        if (_chapter.PreChapter == null){
-            return;
-        }
-        UserChapter uc = UserDataManager.GetInstance().GetUserData().GetUserChapter(_chapter.PreChapter.ChapterId);
-        if (uc == null){
-            return;
-        }
-        _chapter = _chapter.PreChapter;
-        LoadChapter(uc);
-    }
 }

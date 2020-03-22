@@ -20,6 +20,8 @@ using UnityEngine;
     //改变选中的组件
     public void ChangeCheckedObj(GameObject obj)
     {
+        Debug.Log("ChangeCheckedObj obj.name=" + obj.name);
+        var parentObj = obj;
         if (currentCheckObj != null)
         {
             ClickAndRotate car = currentCheckObj.gameObject.GetComponent<ClickAndRotate>();
@@ -27,10 +29,16 @@ using UnityEngine;
         }
         currentCheckObj = obj;
         choose.SetActive(true);
-        Debug.Log("Choose set true");
-        choose.transform.parent = obj.transform;
-        choose.transform.position = obj.transform.position;
-        Debug.Log("set Choose parent obj");
+
+        ClickAndRotate ca = parentObj.GetComponent<ClickAndRotate>();
+        if (ca.RotateObj != null){
+            Debug.Log("parentObj car.RotateObj != null");
+            parentObj = ca.RotateObj;
+        }
+        Debug.Log("Choose set true parentObj.name=" + parentObj.name);
+        choose.transform.parent = parentObj.transform;
+        choose.transform.position = parentObj.transform.position;
+        Debug.Log("set Choose parent obj choose.transform.position=" + choose.transform.position);
     }
     
     // Start is called before the first frame update
@@ -140,6 +148,14 @@ using UnityEngine;
     private void OnBackClick(UEvent evt)
     {
         Debug.Log("OnBackClick");
+        if (stage != null)
+        {
+            ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LoadStage),null);
+            ResetSceneControl();
+            DestroyImmediate(stage.gameObject);
+            // Destroy(stage.gameObject);
+        }
+        VariableManager.GetInstance().SetIntVariable("preLoginPrefab",1);
         SceneManager.LoadScene("StageChoose");
     }
     

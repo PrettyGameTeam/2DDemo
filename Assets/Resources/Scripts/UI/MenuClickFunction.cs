@@ -53,4 +53,38 @@ public class MenuClickFunction : MonoBehaviour
         ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.DebugOneKeyClick), null);
     }
 
+    public void PlayCurrentStage()
+    {
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.PlayCurrentStage), null);
+    }
+
+    public void ClickSetting()
+    {
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.ClickSetting), null);
+    }
+
+    public void ClickShare()
+    {
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.ClickShare), null);
+    }
+
+    public void ClickMemory()
+    {
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.ClickMemory), null);
+    }
+
+    public void QQLogin()
+    {
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.QQLogin), null);
+    }
+
+    public void WechatLogin()
+    {
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.WechatLogin), null);
+    }
+
+    public void BackToMain()
+    {
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.BackToMain), null);
+    }
 }
