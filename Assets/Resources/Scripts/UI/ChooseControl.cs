@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class ChooseControl : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class ChooseControl : MonoBehaviour
         var userData = UserDataManager.GetInstance().GetUserData();
         Stage st = ConfigManager.GetInstance().GetStage(userData.CurrentStage);
         UserChapter uc = userData.GetUserChapter(st.ChapterId);
+        Debug.Log("userData.CurrentStage=" + userData.CurrentStage + ",st.ChapterId=" + st.ChapterId + ",uc.ChaperId=" + uc.ChapterId);
         LoadChapter(uc);
         // audio = GetComponent<AudioSource>();
         // audio.clip = BgAudio;
@@ -55,6 +57,7 @@ public class ChooseControl : MonoBehaviour
         ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.PlayStage,OnPlayStage);
         ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.DebugOneKeyClick,OnOneKey);
         ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.NextChapterClick,OnNextChapterClick);
+        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.PreChapterClick,OnPreChapterClick);
     }
 
     public void LoadChapter(UserChapter userChapter)
@@ -89,8 +92,13 @@ public class ChooseControl : MonoBehaviour
     private void OnPlayStage(UEvent evt)
     {
         Debug.Log("OnPlayStage");
+        if (evt.eventParams == null){
+            showTip("通关上一关卡开启");
+            return;
+        }
         //查找到点击的关卡
         UserDataManager.GetInstance().GetUserData().CurrentStage = (int) evt.eventParams;
+        Debug.Log("CurrentStage=" + UserDataManager.GetInstance().GetUserData().CurrentStage);
         
         // s.PrefabName  
         SceneManager.LoadScene("Stage", LoadSceneMode.Single);
@@ -110,10 +118,12 @@ public class ChooseControl : MonoBehaviour
         Debug.Log("OnNextChapterClick");
         //查找到点击的关卡
         if (_chapter.NextChapter == null){
+            showTip("已经是最后一关");
             return;
         }
         UserChapter uc = UserDataManager.GetInstance().GetUserData().GetUserChapter(_chapter.NextChapter.ChapterId);
         if (uc == null){
+            showTip("通关本章节开启下一章");
             return;
         }
         _chapter = _chapter.NextChapter;
@@ -122,16 +132,28 @@ public class ChooseControl : MonoBehaviour
 
     private void OnPreChapterClick(UEvent evt)
     {
-        Debug.Log("OnNextChapterClick _chapter=" + _chapter);
+        Debug.Log("OnPreChapterClick _chapter=" + _chapter.ChapterId);
         //查找到点击的关卡
         if (_chapter.PreChapter == null){
+            showTip("已经是第一章");
             return;
         }
         UserChapter uc = UserDataManager.GetInstance().GetUserData().GetUserChapter(_chapter.PreChapter.ChapterId);
         if (uc == null){
+            showTip("未知错误");
             return;
         }
         _chapter = _chapter.PreChapter;
         LoadChapter(uc);
+    }
+
+    private void showTip(string msg){
+        GameObject tipBg = (GameObject)Instantiate(Resources.Load("Prefabs/UI/TipBg"));
+        CommonUIAni c = tipBg.GetComponent<CommonUIAni>();
+        tipBg.transform.SetParent(gameObject.transform);
+        tipBg.transform.position = new Vector2(1080/2,1920/2);
+        Text t = tipBg.transform.Find("TipMsg").gameObject.GetComponent<Text>();
+        t.text = msg;
+        c.AutoPlay(10f,10f,1f);
     }
 }

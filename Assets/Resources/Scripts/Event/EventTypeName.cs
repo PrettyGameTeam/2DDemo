@@ -33,6 +33,7 @@ public class EventTypeName
 
     public const string BackToMain = "BackToMain";    //回到主界面
 
+    public const string VictoryActionDone = "VictoryActionDone";    //游戏展示事件完成
 
     
     

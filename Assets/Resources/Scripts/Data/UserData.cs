@@ -10,7 +10,7 @@ public class UserData
 
     public List<UserChapter> Chapters { get; set; }
 
-    public int CurrentStage;
+    public int CurrentStage { get; set; }
 
     public void parseJson(JsonData jd)
     {

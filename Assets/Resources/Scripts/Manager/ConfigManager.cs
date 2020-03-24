@@ -151,7 +151,7 @@ public class ConfigManager
 
     public string GetSystemParamByKey(string key){
         if (key == "StageChooseSound"){
-            return "Audio/Stage/Chapter_1";
+            return "Audio/ShiningLove";
         }
         return null;
     }

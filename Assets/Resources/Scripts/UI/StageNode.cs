@@ -47,6 +47,11 @@ public class StageNode : MonoBehaviour
         
     }
 
+    private void OnDestroy() {
+        Debug.Log("StageNode OnDestroy");
+        _button.onClick.RemoveListener(OnClick);
+    }
+
     //加载数据
     public void LoadData(Stage stage, UserStage userStage)
     {
@@ -66,18 +71,24 @@ public class StageNode : MonoBehaviour
         if (userStage == null)
         {
             _lock.gameObject.SetActive(true);
-            _button.enabled = false;
+            // _button.enabled = false;
         }
         else
         {
             star = userStage.Star;
-            _button.enabled = true;
+            // _button.enabled = true;
             _lock.gameObject.SetActive(false);
         }
 
         Debug.Log("star=" + star + ",_stars.Length=" + _stars.Length);
+        
         for (int i = 0; i < _stars.Length; i++)
         {
+            if (userStage == null){
+                _stars[i].gameObject.SetActive(false);
+                continue;
+            }
+
             if (i == star)
             {
                 _stars[i].gameObject.SetActive(true);    
@@ -92,16 +103,21 @@ public class StageNode : MonoBehaviour
 
     void OnClick()
     {
-        Debug.Log("OnClick stageID = " + _userStage.StageId);
-        Stage stage = ConfigManager.GetInstance().GetStage(_userStage.StageId);
-        if (stage == null)
-        {
-            Debug.LogError("can not found Stage[" +  _userStage.StageId  + "] when Click Stage Node");
+        object param = null;
+        if (_userStage != null){
+            Debug.Log("OnClick stageID = " + _userStage.StageId);
+            Stage stage = ConfigManager.GetInstance().GetStage(_userStage.StageId);
+            if (stage == null)
+            {
+                Debug.LogError("can not found Stage[" +  _userStage.StageId  + "] when Click Stage Node");
+            }
+            else
+            {
+                param = _userStage.StageId;
+            }
         }
-        else
-        {
-            UEvent e = new UEvent(EventTypeName.PlayStage,_userStage.StageId);
-            ObjectEventDispatcher.dispatcher.dispatchEvent(e,null);    
-        }
+        UEvent e = new UEvent(EventTypeName.PlayStage,param);
+        ObjectEventDispatcher.dispatcher.dispatchEvent(e,null);    
+        
     }
 }

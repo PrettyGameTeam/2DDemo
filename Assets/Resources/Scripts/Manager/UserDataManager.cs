@@ -7,6 +7,8 @@ public class UserDataManager
 
     private UserData _userData;
 
+    private bool _inited;
+
     private UserDataManager()
     {
         
@@ -20,8 +22,11 @@ public class UserDataManager
     //加载玩家数据
     public void LoadUserData()
     {
+        if (!_inited){
+            _userData = DBManager.ReadUserData();
+            _inited = true;    
+        }
         //从本地读取玩家存档
-        _userData = DBManager.ReadUserData();
         if (_userData == null)
         {
             InitUserData();

@@ -129,20 +129,20 @@ using UnityEngine;
         //展示胜利面板
         _victoryPanel.SetActive(true);
         //展示星星数
-        for (int i = 0; i <= 2; i++)
-        {
-            var star = _victoryPanel.transform.Find("StarNode" + i + "/Star");
-            var empty = _victoryPanel.transform.Find("StarNode" + i + "/Empty");
-            if (i + 1 <= _star){
-                star.gameObject.SetActive(true);
-                empty.gameObject.SetActive(false);
-            } 
-            else 
-            {
-                star.gameObject.SetActive(false);
-                empty.gameObject.SetActive(true);
-            }
-        }
+        // for (int i = 0; i <= 2; i++)
+        // {
+        //     var star = _victoryPanel.transform.Find("StarNode" + i + "/Star");
+        //     var empty = _victoryPanel.transform.Find("StarNode" + i + "/Empty");
+        //     if (i + 1 <= _star){
+        //         star.gameObject.SetActive(true);
+        //         empty.gameObject.SetActive(false);
+        //     } 
+        //     else 
+        //     {
+        //         star.gameObject.SetActive(false);
+        //         empty.gameObject.SetActive(true);
+        //     }
+        // }
     }
     
     private void OnBackClick(UEvent evt)
@@ -218,7 +218,12 @@ using UnityEngine;
         AudioManager.GetInstance().PlayNewAudio("Audio/Stage/" + _stage.Chapter.ChapterAudio);
         UserData userData = UserDataManager.GetInstance().GetUserData();
         UserStage userStage = userData.GetUserStage(_stage.StageId);
-        _star = userStage.Star;
+        // _star = userStage.Star;
+        GameObject obj = GameObject.Find("SceneControl");
+        GameObject spr = GameObject.Find(stage.name + "/Sprite");
+        SceneControl sc = obj.GetComponent<SceneControl>();
+        ClickAndRotate car = spr.GetComponent<ClickAndRotate>();
+        car.SetChecked(true);
     }
 
 }

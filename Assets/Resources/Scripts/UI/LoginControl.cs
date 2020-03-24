@@ -38,7 +38,8 @@ public class LoginControl : MonoBehaviour
     }
 
     private void OnPlayCurrentStage(UEvent evt){
-        SceneManager.LoadScene("Stage", LoadSceneMode.Single);
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.ClickMemory),null);
+        // SceneManager.LoadScene("Stage", LoadSceneMode.Single);
     }
 
     private void OnClickSetting(UEvent evt){
