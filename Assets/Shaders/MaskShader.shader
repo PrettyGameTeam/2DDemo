@@ -74,9 +74,9 @@ Shader "Unlit/MaskShader"
 
             sampler2D _MainTex;
             float _Alpha;
-            uniform float4 _LightingArr[20];
+            uniform float4 _LightingArr[30];
             uniform float _LightingArrLen;
-            uniform float4 _LineLightingArr[60];
+            uniform float4 _LineLightingArr[90];
             uniform float _LineLightingArrLen;
             fixed4 frag (v2f i) : SV_Target
             {

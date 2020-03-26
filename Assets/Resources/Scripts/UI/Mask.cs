@@ -73,7 +73,7 @@ public class Mask : MonoBehaviour
         // spriteRenderer.sprite = Sprite.Create(t,new Rect(0,0,t.width,t.height), new Vector2(0.5f,0.5f) );
         // Debug.Log("Start2");
         spriteRenderer.material.SetFloat("_LineLightingArrLen",0);
-        List<Vector4> lineLights = new List<Vector4>(60);
+        List<Vector4> lineLights = new List<Vector4>(90);
         spriteRenderer.material.SetVectorArray("_LineLightingArr",lineLights);
     }
 
@@ -134,12 +134,12 @@ public class Mask : MonoBehaviour
                 // Debug.Log("Lighting else Object Name=" + obj.name);
             }
         }
-        for (int i = pointCount; i < 20; i++)
+        for (int i = pointCount; i < 30; i++)
         {
             pointLights.Add(new Vector4());
         }
         
-        for (int i = lineCount; i < 60; i++)
+        for (int i = lineCount; i < 90; i++)
         {
             lineLights.Add(new Vector4());
         }
