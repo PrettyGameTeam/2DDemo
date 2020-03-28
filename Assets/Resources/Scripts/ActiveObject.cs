@@ -75,6 +75,7 @@ public class ActiveObject : MonoBehaviour
                         ActivedObj.SetActive(true);
                         //隐藏激活前的组件
                         gameObject.SetActive(false);
+                        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
                         return;
                     }
                     else
@@ -91,6 +92,7 @@ public class ActiveObject : MonoBehaviour
                         ResetInfo();
                         //动画播放完成,隐藏播放动画的组件
                         AnimationObj.SetActive(false);
+                        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
                         return;
                     }
                     else
@@ -108,6 +110,7 @@ public class ActiveObject : MonoBehaviour
                 SpriteRenderer aniSpr = AnimationObj.GetComponent<SpriteRenderer>();
                 Debug.Log("frameIndex=" + frameIndex + ",Frames.length=" + Frames.Length);
                 aniSpr.sprite = Frames[frameIndex];
+                ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
             }
 
             framePlayTime += Time.deltaTime;
@@ -124,6 +127,7 @@ public class ActiveObject : MonoBehaviour
                         IsOpposePlay = true;
                         //重置framePlayTime
                         framePlayTime = 0;
+                        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
                     }
                 }
             }
@@ -146,6 +150,7 @@ public class ActiveObject : MonoBehaviour
                     AnimationObj.SetActive(true);
                     //重置framePlayTime
                     framePlayTime = 0;
+                    ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
                 }
             }
         }
@@ -163,6 +168,7 @@ public class ActiveObject : MonoBehaviour
         IsOpposePlay = false;
         frameIndex = 0;
         sr.material.color = color;
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
     }
 
     //光源照射时调用
@@ -212,6 +218,7 @@ public class ActiveObject : MonoBehaviour
             
                 //设置动画为正向播放
                 IsOpposePlay = false;
+                ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
             }
         } 
         else if (ActiveType == 3)
@@ -225,6 +232,7 @@ public class ActiveObject : MonoBehaviour
                     lastShiningTime += Time.deltaTime * 1.01f;
                     IsOpposePlay = true;
                     framePlayTime = 0;
+                    ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
                 }
             }
         }

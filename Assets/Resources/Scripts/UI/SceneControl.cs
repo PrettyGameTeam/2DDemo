@@ -127,6 +127,7 @@ using UnityEngine;
             DBManager.WriteUserData();
         }
         //展示胜利面板
+        _victoryPanel.GetComponent<Victory>().ResetAni();
         _victoryPanel.SetActive(true);
         //展示星星数
         // for (int i = 0; i <= 2; i++)

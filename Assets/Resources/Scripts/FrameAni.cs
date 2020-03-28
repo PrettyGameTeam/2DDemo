@@ -151,6 +151,7 @@ public class FrameAni : MonoBehaviour
             }
         }
         _totalPlayTime = 0;
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
     }
 
     public void PlayForward(GameObject gameObject)
@@ -166,6 +167,7 @@ public class FrameAni : MonoBehaviour
         _index = _index == 0 ? 1 :_index;
         _status = 1;
         _totalPlayTime = 0;
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
     }
 
     public void PlayFallback(GameObject gameObject)
@@ -180,6 +182,7 @@ public class FrameAni : MonoBehaviour
         _direction = 2;
         _index = _index == Frames.Length - 1 ? Frames.Length - 2 :_index;
         _status = 1;
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
         // _totalPlayTime = 0;
     }
 

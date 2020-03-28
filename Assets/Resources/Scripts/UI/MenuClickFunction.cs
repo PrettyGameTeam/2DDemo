@@ -87,4 +87,9 @@ public class MenuClickFunction : MonoBehaviour
     {
         ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.BackToMain), null);
     }
+
+    public void TipClose()
+    {
+        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.TipClose), null);
+    }
 }

@@ -10,6 +10,8 @@ public class ChooseControl : MonoBehaviour
     private StageNode[] _stageNodes;
     private Chapter _chapter;
 
+    private GameObject _tipPanel;
+
     // public AudioClip BgAudio;
 
     // private AudioSource audio = null;
@@ -18,6 +20,10 @@ public class ChooseControl : MonoBehaviour
     void Start()
     {
         Debug.Log("ChooseControl Start");
+        _tipPanel = (GameObject)Instantiate(Resources.Load("Prefabs/UI/TipBg"));
+        _tipPanel.transform.SetParent(gameObject.transform);
+        _tipPanel.transform.position = new Vector2(1080/2,1920/2);
+        _tipPanel.SetActive(false);
         //查找Bg
         _stageNodes = new StageNode[25];
         GameObject stageList = GameObject.Find("StageList");
@@ -49,6 +55,7 @@ public class ChooseControl : MonoBehaviour
         ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.DebugOneKeyClick,OnOneKey);
         ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.NextChapterClick,OnNextChapterClick);
         ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.PreChapterClick,OnPreChapterClick);
+        ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.TipClose,OnTipClose);
         
         
     }
@@ -58,6 +65,8 @@ public class ChooseControl : MonoBehaviour
         ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.DebugOneKeyClick,OnOneKey);
         ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.NextChapterClick,OnNextChapterClick);
         ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.PreChapterClick,OnPreChapterClick);
+        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.TipClose,OnTipClose);
+        
     }
 
     public void LoadChapter(UserChapter userChapter)
@@ -147,13 +156,18 @@ public class ChooseControl : MonoBehaviour
         LoadChapter(uc);
     }
 
+    private void OnTipClose(UEvent evt)
+    {
+        _tipPanel.SetActive(false);
+    }
+
     private void showTip(string msg){
-        GameObject tipBg = (GameObject)Instantiate(Resources.Load("Prefabs/UI/TipBg"));
-        CommonUIAni c = tipBg.GetComponent<CommonUIAni>();
-        tipBg.transform.SetParent(gameObject.transform);
-        tipBg.transform.position = new Vector2(1080/2,1920/2);
-        Text t = tipBg.transform.Find("TipMsg").gameObject.GetComponent<Text>();
+        CommonUIAni c = _tipPanel.GetComponent<CommonUIAni>();
+
+        Text t = _tipPanel.transform.Find("TipMsg").gameObject.GetComponent<Text>();
         t.text = msg;
-        c.AutoPlay(10f,10f,1f);
+        c.PlayScale(10f);
+        _tipPanel.SetActive(true);
+        // c.AutoPlay(10f,10f,1f);
     }
 }

@@ -11,6 +11,10 @@ public class Mask : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     private int _status = 0;
+
+    private int _showAfterFrames = 0; //延迟1帧显示光线
+
+    private bool _dirty = false;
     
     public Material GetMaterial
     {
@@ -27,6 +31,7 @@ public class Mask : MonoBehaviour
     void Start()
     {
         ReloadMaterial();
+        OnLightStatusChange(null);
 
         // spriteRenderer.material.SetColor("_Color",new Color(0f,0f,0f,0.5f));
 
@@ -55,49 +60,16 @@ public class Mask : MonoBehaviour
     private void Awake() {
         // Debug.Log(" Mask awake ");
         ObjectEventDispatcher.dispatcher.addEventListener (EventTypeName.Victory, OnVictory);
+        ObjectEventDispatcher.dispatcher.addEventListener (EventTypeName.LightStatusChange, OnLightStatusChange);
     }
 
-    public void ReloadMaterial()
-    {
-        // Debug.Log("Start1");
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        // var t = new Texture2D(1080,1920);
-        // Color a = new Color(0f,0f,0f,1f);
-        // for (int i = 0; i < 1080; i++)
-        // {
-        //     for (int j = 0; j < 1920; j++)
-        //     {
-        //         t.SetPixel(i,j, a);
-        //     }
-        // }
-        // spriteRenderer.sprite = Sprite.Create(t,new Rect(0,0,t.width,t.height), new Vector2(0.5f,0.5f) );
-        // Debug.Log("Start2");
-        spriteRenderer.material.SetFloat("_LineLightingArrLen",0);
-        List<Vector4> lineLights = new List<Vector4>(90);
-        spriteRenderer.material.SetVectorArray("_LineLightingArr",lineLights);
+    private void OnLightStatusChange(UEvent evt){
+        Debug.Log("OnLightStatusChange");
+        _dirty = true;
+        _showAfterFrames = 2;
     }
 
-    private void OnDestroy() {
-        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.Victory, OnVictory);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (_status == 1){
-            
-            // Debug.Log("spriteRenderer.color=" + spriteRenderer.color);
-            if (spriteRenderer.color.a <= 0){
-                _status = 2;
-            }
-            else {
-                var c = spriteRenderer.color;
-                c.a = c.a - 0.5f * Time.deltaTime;
-                c.a = c.a < 0 ? 0 : c.a;
-                spriteRenderer.color = c;
-            }
-        }
-
+    private void reloadLight(){
         var LightingObjects = GameObject.FindGameObjectsWithTag("Lighting");
         // Debug.Log("Mask Update LightingObjects.Count=" + LightingObjects.Length);
         List<Vector4> pointLights = new List<Vector4>();
@@ -154,60 +126,63 @@ public class Mask : MonoBehaviour
             spriteRenderer.material.SetVectorArray("_LineLightingArr",lineLights);
             
         }
-        //鼠标点击时改变遮罩的值
-        // if (Input.GetMouseButtonDown(0))
+    }
+
+    public void ReloadMaterial()
+    {
+        // Debug.Log("Start1");
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        // var t = new Texture2D(1080,1920);
+        // Color a = new Color(0f,0f,0f,1f);
+        // for (int i = 0; i < 1080; i++)
         // {
-        //     var LightingObjects = GameObject.FindGameObjectsWithTag("Lighting");
-        //     List<Vector2> points = new List<Vector2>();
-        //     foreach (var obj in LightingObjects)
+        //     for (int j = 0; j < 1920; j++)
         //     {
-        //         BaseObject bo = obj.gameObject.GetComponent<BaseObject>();
-        //         bo.CalLightingPoints(_maskWidth,_maskHeight);
-        //         points.AddRange(bo.GetLightPoints);
+        //         t.SetPixel(i,j, a);
         //     }
-        //     Debug.Log("points=" + points);
-        //
-        //     foreach (var p in points)
-        //     {
-        //         Color color = new Color(0f,0f,0f,0f);
-        //         // Debug.Log("x=" + x + ",y=" + y + ",r=" + r + ",color=" + color);
-        //         spriteRenderer.sprite.texture.SetPixel((int)p.x,(int)p.y,color);
-        //     }
-        //     spriteRenderer.sprite.texture.Apply();
-            // var LightingObjects = GameObject.FindGameObjectsWithTag("Lighting");
-            // foreach (var obj in LightingObjects)
-            // {
-            //     Debug.Log("obj.position=" + obj.transform.position);
-            //     Debug.Log("obj.localPosition=" + obj.transform.localPosition);
-            //     Debug.Log("obj.localScale=" + obj.transform.localScale);
-            //     Debug.Log("obj.size=" + obj.GetComponent<Renderer>().bounds.size);
-            //     var xOnMask = (int) (obj.transform.position.x * 100) + spriteRenderer.sprite.texture.width / 2;
-            //     var yOnMask = (int) (obj.transform.position.y * 100) + spriteRenderer.sprite.texture.height / 2;
-            //     var minX = xOnMask - 50;
-            //     var maxX = xOnMask + 50;
-            //     var minY = yOnMask - 50;
-            //     var maxY = yOnMask + 50;
-            //     // Debug.Log("leftAdd=" + leftAdd + ",minX=" + minX + ",maxX=" + maxX + ",minY=" + minY + ",maxY=" + maxY);
-            //
-            //     for (int x = minX; x < maxX; x++)
-            //     {
-            //         for (int y = minY; y < maxY; y++)
-            //         {
-            //             Vector3 p1 = new Vector3(x,y,0);
-            //             Vector3 p2 = new Vector3(xOnMask,yOnMask,0);
-            //             var r = (p1 - p2).magnitude;
-            //             if (r <= 50)
-            //             {
-            //                 Color color = new Color(0f,0f,0f,0.8f);
-            //                 color.a = (r / 50) / 2;
-            //                 // Debug.Log("x=" + x + ",y=" + y + ",r=" + r + ",color=" + color);
-            //                 spriteRenderer.sprite.texture.SetPixel(x,y,color);
-            //                 // MaskTex.SetPixel(x,y,color);
-            //             }
-            //         }
-            //     }
-            // }
-            // spriteRenderer.sprite.texture.Apply();
         // }
+        // spriteRenderer.sprite = Sprite.Create(t,new Rect(0,0,t.width,t.height), new Vector2(0.5f,0.5f) );
+        // Debug.Log("Start2");
+        spriteRenderer.material.SetFloat("_LineLightingArrLen",0);
+        List<Vector4> lineLights = new List<Vector4>(90);
+        spriteRenderer.material.SetVectorArray("_LineLightingArr",lineLights);
+    }
+
+    private void OnDestroy() {
+        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.Victory, OnVictory);
+        ObjectEventDispatcher.dispatcher.removeEventListener (EventTypeName.LightStatusChange, OnLightStatusChange);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (_status == 1){
+            
+            if (spriteRenderer.color.a <= 0){
+                // Debug.Log("spriteRenderer.color=" + spriteRenderer.color + " if");
+                _status = 2;
+            }
+            else {
+                var c = spriteRenderer.color;
+                c.a = c.a - 0.5f * Time.deltaTime;
+                c.a = c.a < 0 ? 0 : c.a;
+                spriteRenderer.color = c;
+                // Debug.Log("spriteRenderer.color=" + spriteRenderer.color + " else");
+            }
+            reloadLight();
+        }
+
+        if (_dirty){
+            if (_showAfterFrames <= 0){
+                _dirty = false;
+                _showAfterFrames = 0;
+                // Debug.Log("OnLightStatusChange _dirty = false _showAfterFrames=" + 0);
+                reloadLight();
+            } else {
+                _showAfterFrames--;
+                // Debug.Log("OnLightStatusChange _showAfterFrames-- _showAfterFrames=" + _showAfterFrames);
+                reloadLight();
+            }
+        }
     }
 }

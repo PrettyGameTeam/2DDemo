@@ -35,6 +35,9 @@ public class EventTypeName
 
     public const string VictoryActionDone = "VictoryActionDone";    //游戏展示事件完成
 
+    public const string LightStatusChange = "LightStatusChange";    //光源状态改变
+    public const string TipClose = "TipClose";    //关闭tip窗
+
     
     
 }

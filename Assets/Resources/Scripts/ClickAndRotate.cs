@@ -158,6 +158,7 @@ public class ClickAndRotate : MonoBehaviour
                     }
                 }
                 t.eulerAngles = new Vector3(t.eulerAngles.x,t.eulerAngles.y,t.eulerAngles.z + angle);
+                ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
             } 
             //滑动
             else if (OpType == 2)
@@ -179,6 +180,7 @@ public class ClickAndRotate : MonoBehaviour
                 Debug.Log("Update centerPosition=" + centerPosition + ",start=" + start + ",end=" + end + ",c=" + c );
                 t.position += (Vector3)c;
                 centerPosition += c;
+                ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
             }
 
 

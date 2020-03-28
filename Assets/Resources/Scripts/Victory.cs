@@ -31,6 +31,7 @@ public class Victory : MonoBehaviour
         _star0 = transform.Find("Panel/Star0/Star").gameObject;
         _star1 = transform.Find("Panel/Star1/Star").gameObject;
         _star2 = transform.Find("Panel/Star2/Star").gameObject;
+        ResetAni();
     }
 
     // Update is called once per frame
@@ -100,6 +101,10 @@ public class Victory : MonoBehaviour
 
     private void OnDestroy() {
         ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.VictoryActionDone,OnVictoryActionDone);
+    }
+
+    public void ResetAni(){
+        _aniIndex = 0;
     }
 
 
