@@ -13,9 +13,11 @@ public class StageChooseControl : MonoBehaviour
     {
         Debug.Log("StageChooseControl Start");
         _loginCanvas = (GameObject)Instantiate(Resources.Load("Prefabs/UI/LoginPanel"));
-        _loginCanvas.transform.parent = transform;
+        _loginCanvas.transform.SetParent(transform,false);
+        // _loginCanvas.transform.parent = transform;
         _stageChooseCanvas = (GameObject)Instantiate(Resources.Load("Prefabs/UI/StageChoose"));
-        _stageChooseCanvas.transform.parent = transform;
+        _stageChooseCanvas.transform.SetParent(transform,false);
+        // _stageChooseCanvas.transform.parent = transform;
         var pre = VariableManager.GetInstance().GetIntVariable("preLoginPrefab");
         if (pre == 0){
             _loginCanvas.SetActive(true);

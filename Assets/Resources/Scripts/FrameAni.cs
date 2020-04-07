@@ -141,14 +141,25 @@ public class FrameAni : MonoBehaviour
         else
         {
             MultiActive ma = _driveObj.GetComponent<MultiActive>();
-            if (_direction == 1){
-                _status = 2;
-                ma.ForwardOver();
+            if (ma != null){
+                if (_direction == 1){
+                    _status = 2;
+                    ma.ForwardOver();
+                }
+                else if (_direction == 2){
+                    _status = 0;
+                    ma.FallbackOver();
+                }
             }
-            else if (_direction == 2){
-                _status = 0;
-                ma.FallbackOver();
+
+            Target ta = _driveObj.GetComponent<Target>();
+            if (ta != null){
+                if (_direction == 1){
+                    _status = 2;
+                    ta.ForwardOver();
+                }
             }
+            
         }
         _totalPlayTime = 0;
         ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);

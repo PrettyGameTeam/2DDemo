@@ -53,7 +53,7 @@ using UnityEngine;
         loadStage();
         //加载菜单面板
         _victoryPanel = (GameObject)Instantiate(Resources.Load("Prefabs/UI/VictoryPanel"));
-        _victoryPanel.transform.SetParent(canvas.transform);
+        _victoryPanel.transform.SetParent(canvas.transform,false);
         _victoryPanel.transform.position = canvas.transform.position;
         _victoryPanel.SetActive(false);
     }
@@ -224,7 +224,7 @@ using UnityEngine;
         GameObject spr = GameObject.Find(stage.name + "/Sprite");
         SceneControl sc = obj.GetComponent<SceneControl>();
         ClickAndRotate car = spr.GetComponent<ClickAndRotate>();
-        car.SetChecked(true);
+        // car.SetChecked(true);
     }
 
 }

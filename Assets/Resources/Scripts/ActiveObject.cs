@@ -46,6 +46,8 @@ public class ActiveObject : MonoBehaviour
     
     //本节点材质颜色
     private Color color;
+
+    private Vector2 _originPos;
     
     // Start is called before the first frame update
     void Start()
@@ -60,74 +62,86 @@ public class ActiveObject : MonoBehaviour
         // Debug.Log("ActiveType=" + ActiveType + ",lastShiningTime=" + lastShiningTime);
         if (IsPlaying)
         {
-            bool changeAniSpr = false;
-            if (framePlayTime >= DeltaPerFrame)
+            if (AnimationObj == null)
             {
-                //正向播放且当前帧数等于最后一帧 播放完成
-                if (!IsOpposePlay)
-                {
-                    if (frameIndex >= Frames.Length - 1)
-                    {
-                        ResetInfo();
-                        //动画播放完成,隐藏播放动画的组件
-                        AnimationObj.SetActive(false);
-                        //显示激活后的组件
-                        ActivedObj.SetActive(true);
-                        //隐藏激活前的组件
-                        gameObject.SetActive(false);
-                        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
-                        return;
-                    }
-                    else
-                    {
-                        frameIndex++;
-                        changeAniSpr = true;
-                    }
-                }
-                //反向播放回到第一帧,播放结束
-                else
-                {
-                    if (frameIndex <= 0)
-                    {
-                        ResetInfo();
-                        //动画播放完成,隐藏播放动画的组件
-                        AnimationObj.SetActive(false);
-                        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
-                        return;
-                    }
-                    else
-                    {
-                        frameIndex--;
-                        changeAniSpr = true;
-                    }
-                    
-                }
-                framePlayTime = 0;
+                ResetInfo();
+                //隐藏激活前的组件
+                gameObject.SetActive(false);
+                ActivedObj.SetActive(true);
+                ClickAndRotate car = ActivedObj.GetComponent<ClickAndRotate>();
+                car.SetChecked(true);
             }
-
-            if (changeAniSpr)
+            else 
             {
-                SpriteRenderer aniSpr = AnimationObj.GetComponent<SpriteRenderer>();
-                Debug.Log("frameIndex=" + frameIndex + ",Frames.length=" + Frames.Length);
-                aniSpr.sprite = Frames[frameIndex];
-                ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
-            }
-
-            framePlayTime += Time.deltaTime;
-            if (ActiveType == 2)
-            {
-                lastShiningTime -= Time.deltaTime;
-                if (lastShiningTime < 0)
+                bool changeAniSpr = false;
+                if (framePlayTime >= DeltaPerFrame)
                 {
-                    lastShiningTime = 0;
-                    //正向播放改反向
+                    //正向播放且当前帧数等于最后一帧 播放完成
                     if (!IsOpposePlay)
                     {
-                        //持续照射时间归零,开始反向播放动画
-                        IsOpposePlay = true;
-                        //重置framePlayTime
-                        framePlayTime = 0;
-                        ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
+                        if (frameIndex >= Frames.Length - 1)
+                        {
+                            ResetInfo();
+                            //动画播放完成,隐藏播放动画的组件
+                            AnimationObj.SetActive(false);
+                            //显示激活后的组件
+                            ActivedObj.SetActive(true);
+                            //隐藏激活前的组件
+                            gameObject.SetActive(false);
+                            ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
+                            return;
+                        }
+                        else
+                        {
+                            frameIndex++;
+                            changeAniSpr = true;
+                        }
+                    }
+                    //反向播放回到第一帧,播放结束
+                    else
+                    {
+                        if (frameIndex <= 0)
+                        {
+                            ResetInfo();
+                            //动画播放完成,隐藏播放动画的组件
+                            AnimationObj.SetActive(false);
+                            ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
+                            return;
+                        }
+                        else
+                        {
+                            frameIndex--;
+                            changeAniSpr = true;
+                        }
+                        
+                    }
+                    framePlayTime = 0;
+                }
+
+                if (changeAniSpr)
+                {
+                    SpriteRenderer aniSpr = AnimationObj.GetComponent<SpriteRenderer>();
+                    Debug.Log("frameIndex=" + frameIndex + ",Frames.length=" + Frames.Length);
+                    aniSpr.sprite = Frames[frameIndex];
+                    ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
+                }
+
+                framePlayTime += Time.deltaTime;
+                if (ActiveType == 2)
+                {
+                    lastShiningTime -= Time.deltaTime;
+                    if (lastShiningTime < 0)
+                    {
+                        lastShiningTime = 0;
+                        //正向播放改反向
+                        if (!IsOpposePlay)
+                        {
+                            //持续照射时间归零,开始反向播放动画
+                            IsOpposePlay = true;
+                            //重置framePlayTime
+                            framePlayTime = 0;
+                            ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
+                        }
                     }
                 }
             }
@@ -154,7 +168,35 @@ public class ActiveObject : MonoBehaviour
                 }
             }
         }
-        
+    }
+
+    //当鼠标点击下去
+    private void OnMouseDown()
+    {
+        Debug.Log("OnMouseDown");
+        if (ActiveType == 1 && !IsPlaying){
+            var mousePositionOnScreen = Input.mousePosition;
+            var mousePositionInWorld =  Camera.main.ScreenToWorldPoint(mousePositionOnScreen);
+            _originPos = mousePositionInWorld;
+        }
+    }
+
+    //当鼠标抬起
+    private void OnMouseUp()
+    {
+        Debug.Log("OnMouseUp");
+        if (ActiveType == 1 && !IsPlaying){
+            var mousePositionOnScreen = Input.mousePosition;
+            var mousePositionInWorld = Camera.main.ScreenToWorldPoint(mousePositionOnScreen);
+            IsPlaying = true;
+            //设置动画节点显示
+            if (AnimationObj != null) {
+                AnimationObj.SetActive(true);
+            }
+            //设置动画为正向播放
+            IsOpposePlay = false;
+            ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);
+        }
     }
 
     private void ResetInfo()
@@ -214,8 +256,9 @@ public class ActiveObject : MonoBehaviour
                 //设置本节点透明度为0
                 sr.material.color = new Color(1,1,1,0);
                 //设置动画节点显示
-                AnimationObj.SetActive(true);
-            
+                if (AnimationObj != null) {
+                    AnimationObj.SetActive(true);
+                }
                 //设置动画为正向播放
                 IsOpposePlay = false;
                 ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.LightStatusChange),null);

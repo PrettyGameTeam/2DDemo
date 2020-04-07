@@ -8,15 +8,10 @@ public class Target : MonoBehaviour
 {
     private Vector3 originPos;
 
-    public Sprite[] Frames;
-
-    public float DeltaPerFrame = 0.1f;
+    public GameObject[] AniObjs;
 
     private int _status = 0;
 
-    private float _playTime = 0f;
-
-    private int _frameIndex = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,31 +21,43 @@ public class Target : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_status == 1){
-            if (_frameIndex >= Frames.Length - 1)
-            {
-                _status = 2;
-                ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.Victory),null);
-                gameObject.SetActive(false);
-                return;
-                
+    }
+
+    public void ForwardOver(){
+        //检查所有动画是否播放完
+        bool isEnd = true;
+        foreach (var obj in AniObjs)
+        {
+            FrameAni fa = obj.GetComponent<FrameAni>();
+            if (!fa.IsEnd()){
+                isEnd = false;
+                break;
             }
-            else 
+        }
+
+        if (isEnd){
+            _status = 2;
+            //设置动画组件隐藏
+            foreach (var obj in AniObjs)
             {
-                if (_playTime >= DeltaPerFrame){
-                    _frameIndex++;
-                    _playTime = 0;
-                    SpriteRenderer aniSpr = GetComponent<SpriteRenderer>();
-                    aniSpr.sprite = Frames[_frameIndex];
-                }
+                obj.SetActive(false);
             }
-            _playTime += Time.deltaTime;
+            ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.Victory),null);
         }
     }
 
     private void PlayAni(){
-        if (_status == 0 && Frames != null && Frames.Length > 0){
+        
+        if (_status == 0){
             _status = 1;
+            //自身设置为隐藏
+            gameObject.SetActive(false);
+            foreach (var obj in AniObjs)
+            {
+                FrameAni fa = obj.GetComponent<FrameAni>();
+                fa.PlayForward(gameObject);
+                obj.SetActive(true);
+            }
         }
     }
 

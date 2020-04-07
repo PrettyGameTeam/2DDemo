@@ -21,7 +21,7 @@ public class ChooseControl : MonoBehaviour
     {
         Debug.Log("ChooseControl Start");
         _tipPanel = (GameObject)Instantiate(Resources.Load("Prefabs/UI/TipBg"));
-        _tipPanel.transform.SetParent(gameObject.transform);
+        _tipPanel.transform.SetParent(gameObject.transform,false);
         _tipPanel.transform.position = new Vector2(1080/2,1920/2);
         _tipPanel.SetActive(false);
         //查找Bg
