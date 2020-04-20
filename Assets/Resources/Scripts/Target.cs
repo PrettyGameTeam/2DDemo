@@ -12,6 +12,8 @@ public class Target : MonoBehaviour
 
     private int _status = 0;
 
+    private bool _gunDisappear = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,7 +37,8 @@ public class Target : MonoBehaviour
             }
         }
 
-        if (isEnd){
+        Debug.Log("ForwardOver isEnd=" + isEnd + ",_gunDisappear=" + _gunDisappear);
+        if (isEnd && _gunDisappear){
             _status = 2;
             //设置动画组件隐藏
             foreach (var obj in AniObjs)
@@ -79,8 +82,33 @@ public class Target : MonoBehaviour
             SpriteRenderer sr = GetComponent<SpriteRenderer>();
             if (sr != null && sr.sprite != null && sr.material != null && sr.material.color.a >= 1f)
             {
-                PlayAni();
+                // PlayAni();
+                ObjectEventDispatcher.dispatcher.dispatchEvent(new UEvent(EventTypeName.TargetClick),gameObject);
             }
         }   
     }
+
+    public void SetGunDisappear(){
+        Debug.Log("SetGunDisappear");
+        _gunDisappear = true;
+        ForwardOver();
+    }
+
+    /// <summary>
+    /// Awake is called when the script instance is being loaded.
+    /// </summary>
+    void Awake()
+    {
+        ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.VictoryAniPlay,OnVictoryAniPlay);
+    }
+
+    private void OnDestroy() {
+        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.VictoryAniPlay,OnVictoryAniPlay);
+    }
+
+    private void OnVictoryAniPlay(UEvent evt){
+        PlayAni();
+    }
+
+
 }

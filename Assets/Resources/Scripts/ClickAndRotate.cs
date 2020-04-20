@@ -25,6 +25,9 @@ public class ClickAndRotate : MonoBehaviour
     //点击结束位置
     private Vector2 currentPos;
 
+    //显示选中
+    private GameObject _choose;
+
     //是否被选中
     private bool isChecked = false;
 
@@ -46,6 +49,8 @@ public class ClickAndRotate : MonoBehaviour
     private Vector3 start;
     
     private Vector3 end;
+
+    private bool _lockRotate = false;
 
     // Start is called before the first frame update
     void Start()
@@ -76,6 +81,8 @@ public class ClickAndRotate : MonoBehaviour
             
             //计算初始位置在滑杆上的投影向量
             centerPosition = (Vector2)start + ShadowVector(transform.position - start, end - start);
+            _choose = transform.Find("Choose").gameObject;
+            _choose.SetActive(false);
             Debug.Log("Start centerPosition=" + centerPosition + ",start=" + start + ",end=" + end );
         }
     }
@@ -83,6 +90,9 @@ public class ClickAndRotate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (_lockRotate){
+            return;
+        }
         //响应鼠标点击事件
         if (Input.GetMouseButtonDown(0))
         {
@@ -135,7 +145,6 @@ public class ClickAndRotate : MonoBehaviour
             {
                 t = transform;
             }
-            
 
             //转动
             if (OpType == 1) 
@@ -227,9 +236,18 @@ public class ClickAndRotate : MonoBehaviour
         //被选中了,发送给场景控制器选中消息,将其他组件设置成非选中状态
         if (isCheck)
         {
+            if (OpType == 2 && _choose != null){
+                _choose.SetActive(true);
+            }
             GameObject obj = GameObject.Find("SceneControl");
             SceneControl sc = obj.GetComponent<SceneControl>();
             sc.ChangeCheckedObj(gameObject);
+        }
+        else 
+        {
+            if (OpType == 2 && _choose != null){
+                _choose.SetActive(false);
+            }
         }
     }
     
@@ -247,5 +265,17 @@ public class ClickAndRotate : MonoBehaviour
     public Vector2 ShadowVector(Vector2 a,Vector2 b)
     {
         return Vector3.Project(a,b);
+    }
+
+    private void OnTargetClick(UEvent evt){
+        _lockRotate = true;
+    }
+
+    private void Awake() {
+        ObjectEventDispatcher.dispatcher.addEventListener(EventTypeName.TargetClick, OnTargetClick);
+    }
+
+    private void OnDestroy() {
+        ObjectEventDispatcher.dispatcher.removeEventListener(EventTypeName.TargetClick, OnTargetClick);
     }
 }

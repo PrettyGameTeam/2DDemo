@@ -44,11 +44,14 @@ public class UEventDispatcher
     /// <param name="gameObject">Game object.</param>
     public void dispatchEvent(UEvent evt, object gameObject)
     {
-        UEventListener eventListener = eventListenerDict[evt.eventType];
-        if (eventListener == null) return;
+        if (eventListenerDict.ContainsKey(evt.eventType)){
+            UEventListener eventListener = eventListenerDict[evt.eventType];
+            if (eventListener == null) return;
 
-        evt.target = gameObject;
-        eventListener.Excute(evt);
+            evt.target = gameObject;
+            eventListener.Excute(evt);
+        }
+        
     }
 
     /// <summary>

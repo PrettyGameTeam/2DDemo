@@ -38,6 +38,10 @@ public class EventTypeName
     public const string LightStatusChange = "LightStatusChange";    //光源状态改变
     public const string TipClose = "TipClose";    //关闭tip窗
 
-    
+    public const string TargetClick = "TargetClick";    //结束目标点击
+
+    public const string StarFlyEnd = "StarFlyEnd";    //星星飞行结束
+
+    public const string VictoryAniPlay = "VictoryAniPlay";    //播放结束动画
     
 }
